@@ -1,0 +1,17 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:item": {
+        "description": {
+            "identifier": "addon:headlight_off",
+            "category": "nature"
+        },
+        "components": {
+            "minecraft:icon": {
+                "texture": "headlight_off"
+            },
+            "minecraft:display_name":{
+                "value": "headlight_off"
+            }
+        }
+    }
+}

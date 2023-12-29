@@ -1,0 +1,29 @@
+{
+    "format_version": "1.20.10",
+    "minecraft:entity": {
+        "description": {
+            "identifier": "addon:tr",
+            "is_spawnable": false,
+            "is_summonable": true,
+            "is_experimental": false
+        },
+        "components": {
+            "minecraft:collision_box": {
+                "height": 1,
+                "width": 2
+            },
+            "minecraft:damage_sensor": {
+                "triggers": {
+                    "deals_damage": false
+                }
+            },
+            "minecraft:inventory": {
+				"inventory_size": 16,
+                "container_type":"container"
+			},
+            "minecraft:nameable": {
+                "allowed_name_tag_renaming":false
+            }
+        }
+    }
+}

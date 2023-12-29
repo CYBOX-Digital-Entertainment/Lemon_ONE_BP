@@ -1,0 +1,17 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:item": {
+        "description": {
+            "identifier": "addon:roll_down",
+            "category": "nature"
+        },
+        "components": {
+            "minecraft:icon": {
+                "texture": "roll_down"
+            },
+            "minecraft:display_name":{
+                "value": "roll_down"
+            }
+        }
+    }
+}

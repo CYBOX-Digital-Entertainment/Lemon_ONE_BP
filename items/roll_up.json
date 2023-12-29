@@ -1,0 +1,17 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:item": {
+		"description": {
+			"identifier": "addon:roll_up",
+            "category": "nature"
+		},
+		"components": {
+			"minecraft:icon": {
+				"texture": "roll_up"
+			},
+            "minecraft:display_name": {
+                "value": "roll_up"
+            }
+		}
+	}
+}

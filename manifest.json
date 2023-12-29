@@ -1,0 +1,62 @@
+{
+	"format_version": 2,
+	"header": {
+		"name": "Lemon one Addon",
+		"description": "by Lemon7679",
+		"min_engine_version": [
+			1,
+			20,
+			40
+		],
+		"uuid": "121abcd5-2b08-46c4-845a-04247d699b08",
+		"version": [
+			1,
+			0,
+			0
+		]
+	},
+	"modules": [
+		{
+			"type": "data",
+			"uuid": "2ef2a334-d8a8-41db-ac6d-cf8899b8cf28",
+			"version": [
+				1,
+				0,
+				0
+			]
+		},
+		{
+			"type": "script",
+			"language": "javascript",
+			"uuid": "1ba0130c-4b0b-4407-a255-83891766fff2",
+			"entry": "scripts/main.js",
+			"version": [
+				1,
+				0,
+				0
+			]
+		}
+	],
+	"dependencies": [
+		{
+			"uuid": "f0e60ab8-19e8-419c-a9f1-3a84efff2515",
+			"version": [
+				1,
+				0,
+				0
+			]
+		},
+		{
+			"module_name": "@minecraft/server",
+			"version": "1.8.0-beta"
+		},
+		{
+			"module_name": "@minecraft/server-gametest",
+			"version": "1.0.0-beta"
+		},
+		{
+			"module_name": "@minecraft/server-ui",
+			"version": "1.2.0-beta"
+		}
+	]
+}
