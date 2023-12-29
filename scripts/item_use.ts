@@ -9,11 +9,11 @@ world.beforeEvents.itemUse.subscribe(({ source, itemStack, cancel }) => {
         console.warn(itemStack.typeId)
         switch (itemStack.typeId) {
             case "addon:headlight_off": {
-                playAni(source,"animation.tosca.light_off")
+                playAni(source, "")
                 break;
             }
             case "addon:headlight_on": {
-                playAni(source, "animation.tosca.light_on")
+                playAni(source, "")
                 break;
             }
             case "addon:horn": {
@@ -36,11 +36,11 @@ world.beforeEvents.itemUse.subscribe(({ source, itemStack, cancel }) => {
                 break;
             }
             case "addon:roll_down": {
-                playAni(source, "")
+                playAni(source, "main_windows_close")
                 break;
             }
             case "addon:roll_up": {
-                playAni(source, "")
+                playAni(source, "main_windows_open")
                 break;
             }
         }
