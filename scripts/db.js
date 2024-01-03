@@ -6,7 +6,7 @@ export function saveData(varname, value) {
 export function readData(varname) {
     try {
         const getValue = world.getDynamicProperty(varname);
-        if (getValue == undefined) {
+        if (world.getDynamicProperty(varname) == undefined) {
             return undefined;
         }
         return JSON.parse(`${getValue}`);

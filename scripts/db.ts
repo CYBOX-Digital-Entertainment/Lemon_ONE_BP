@@ -8,7 +8,7 @@ export function saveData(varname: string, value: number | object | string | bool
 export function readData(varname: string): object | string | undefined {
     try {
         const getValue = world.getDynamicProperty(varname);
-        if ( getValue == undefined) {
+        if ( world.getDynamicProperty(varname) == undefined) {
             return undefined
         }
         return JSON.parse(`${getValue}`);

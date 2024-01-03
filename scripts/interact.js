@@ -1,4 +1,4 @@
-import { EntityEquippableComponent, EquipmentSlot, system, world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 import { readData, saveData } from "./db";
 import { ActionFormData } from "@minecraft/server-ui";
 import { EntityData } from "./class";
@@ -24,55 +24,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         }
     }
 });
-const arr = [];
-// 20틱 간격으로 실행되는 반복 작업
-system.runInterval(() => {
-    for (const player of world.getAllPlayers()) {
-        for (const target of player.dimension.getEntities({ "type": "daewoo:tosca_gb" })) {
-            const radius = getradius(player.location, target.location);
-            if (radius > 5) {
-                console.warn(radius);
-                if (arr.includes(player.name)) {
-                    const index = arr.findIndex(element => element === player.name);
-                    if (index !== -1) {
-                        arr.splice(index, 1);
-                    }
-                }
-            }
-            else if (radius <= 5) {
-                const eq = player.getComponent(EntityEquippableComponent.componentId);
-                const mainhandEquipment = eq.getEquipment(EquipmentSlot.Mainhand);
-                if (!mainhandEquipment || mainhandEquipment.getLore()[0] === undefined) {
-                    continue;
-                }
-                const rid = target.getComponent("minecraft:rideable");
-                const data = readData(target.id);
-                if (rid == undefined)
-                    return;
-                if (mainhandEquipment.typeId.startsWith("addon:") || (!data.ride && mainhandEquipment.getLore()[0].slice(14) !== target.id)) {
-                    continue;
-                }
-                if (mainhandEquipment.typeId === "key:key" && mainhandEquipment.getLore()[0].slice(14) === target.id && !arr.includes(player.name)) {
-                    const isPlayerRiding = rid.getRiders()[0]?.id === player.id || rid.getRiders()[0]?.id === data.plid || data.ride;
-                    arr.push(player.name);
-                    if (isPlayerRiding) {
-                        openui2(player, data);
-                    }
-                    else {
-                        openui(player, data);
-                    }
-                }
-            }
-        }
-    }
-}, 20);
-function getradius(location1, location2) {
-    const X = Math.round(location2.x) - Math.round(location1.x);
-    const Y = Math.round(location2.y) - Math.round(location1.y);
-    const Z = Math.round(location2.z) - Math.round(location1.z);
-    const result = Math.sqrt(Math.round(X ** 2 + Y ** 2 + Z ** 2));
-    return result;
-}
 function openui(player, entity) {
     const data = new EntityData(entity);
     system.run(() => {
