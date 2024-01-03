@@ -1,4 +1,4 @@
-import { EntityRideableComponent, Player, system, world } from "@minecraft/server";
+import { EntityEquippableComponent, EntityRideableComponent, EquipmentSlot, Player, system, world } from "@minecraft/server";
 import { readData, saveData } from "./db"
 import { ActionFormData } from "@minecraft/server-ui";
 import { EntityData } from "./class"
@@ -29,69 +29,59 @@ const arr : string[] = [];
 
 // 20틱 간격으로 실행되는 반복 작업
 system.runInterval(() => {
-    // 모든 플레이어에 대해 반복
-    for (const player of world.getPlayers()) {
-        // 플레이어의 손에 들고 있는 아이템 슬롯(Mainhand)을 가져옴
-        const itemStack = player.getComponent("equippable")?.getEquipment("Mainhand");
+    for (const player of world.getAllPlayers()) {
+        for (const target of player.dimension.getEntities({ "type": "daewoo:tosca_gb" })) {
+            const radius = getradius(player.location, target.location);
 
-        // 아이템 슬롯이 존재하고, 로어(lore)가 존재할 경우 실행
-        if (itemStack && itemStack.getLore()[0]) {
-            // 로어에서 타겟 엔티티의 ID를 추출
-            const targetId = itemStack.getLore()[0].slice(14);
+            if (radius > 5) {
+                console.warn(radius);
 
-            // 추출한 타겟 ID에 해당하는 엔티티가 존재할 경우 실행
-            if (world.getEntity(targetId)) {
-                const target = world.getEntity(targetId);
+                if (arr.includes(player.name)) {
+                    const index = arr.findIndex(element => element === player.name);
 
-                if (target?.typeId !== "daewoo:tosca_gb") return;
-
-                // 플레이어와 타겟 간의 거리를 계산
-                const distance = getradius(player.location, target.location);
-                const rid = target.getComponent(`minecraft:rideable`);
-
-                // 거리가 5 이하인 경우 실행
-                if (distance <= 5) {
-                     if (arr.includes(player.name) == true) return
-                    // 타겟의 `minecraft:rideable` 컴포넌트와 데이터를 가져옴
-                    const data = readData(target.id);
-
-                    // 키 타입이 "key:key"이고, 로어의 ID와 타겟의 ID가 일치하는 경우 실행
-                    if (itemStack.typeId == "key:key") {
-                        arr.push(player.name)
-                        // 타겟을 타고 있는지 또는 타겟의 플레이어 ID와 데이터의 플레이어 ID가 일치하거나 데이터의 ride가 true인 경우
-                        if (rid?.getRiders()[0]?.id == player.id || rid?.getRiders()[0]?.id == data?.plid || data?.ride) {
-                            // UI를 열고 데이터 전달
-                            openui2(player, data);
-                        } else {
-                            // UI를 열고 데이터 전달
-                            openui(player, data);
-                        }
+                    if (index !== -1) {
+                        arr.splice(index, 1);
                     }
                 }
-                else if (distance > 5) {
-                    console.warn(arr)
-                    if (arr.includes(player.name)) {
-                        const index = arr.findIndex(element => element === player.name);
+            } else if (radius <= 5) {
+                const eq = player.getComponent(EntityEquippableComponent.componentId) as EntityEquippableComponent;
+                const mainhandEquipment = eq.getEquipment(EquipmentSlot.Mainhand)
+                if (!mainhandEquipment || mainhandEquipment.getLore()[0] === undefined) {
+                    continue;
+                }
 
-                        if (index !== -1) {
-                            arr.splice(index, 1);
-                        }
+                const rid = target.getComponent("minecraft:rideable") as EntityRideableComponent;
+                const data = readData(target.id) as EntityData;
+                if (rid == undefined) return;
+                if (mainhandEquipment.typeId.startsWith("addon:") || (!data.ride && mainhandEquipment.getLore()[0].slice(14) !== target.id)) {
+                    continue;
+                }
+
+                if (mainhandEquipment.typeId === "key:key" && mainhandEquipment.getLore()[0].slice(14) === target.id && !arr.includes(player.name)) {
+                    const isPlayerRiding = rid.getRiders()[0]?.id === player.id || rid.getRiders()[0]?.id === data.plid || data.ride;
+
+                    arr.push(player.name);
+
+                    if (isPlayerRiding) {
+                        openui2(player, data);
+                    } else {
+                        openui(player, data);
                     }
                 }
             }
         }
     }
-}, 10);
+}, 20);
 
 
-    function getradius(location1 , location2) {
-        const X = Math.round(location2.x) - Math.round(location1.x);
-        const Y = Math.round(location2.y) - Math.round(location1.y);
-        const Z = Math.round(location2.z) - Math.round(location1.z);
-    
-        const result = Math.sqrt(X ** 2 + Y ** 2 + Z ** 2);
-        return result;
-    }
+function getradius(location1 , location2) {
+    const X = Math.round(location2.x) - Math.round(location1.x);
+    const Y = Math.round(location2.y) - Math.round(location1.y);
+    const Z = Math.round(location2.z) - Math.round(location1.z);
+
+    const result = Math.sqrt(Math.round(X ** 2 + Y ** 2 + Z ** 2));
+    return result;
+}
 
 
 
