@@ -9,8 +9,9 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     if (target.typeId != "daewoo:tosca_gb") return;
     const rid = target.getComponent(`minecraft:rideable`) as EntityRideableComponent
     const data = readData(target.id) as EntityData
-    if (itemStack?.typeId.startsWith(`addon:`) || (!data.ride && itemStack?.getLore()[0].slice(14) != target.id)) {
+    if (itemStack?.typeId.startsWith(`addon:`) || (!data.ride && itemStack?.getLore()[0]?.slice(14) != target.id)) {
         e.cancel = true
+        console.warn(`cancel`)
         return
 
     }
