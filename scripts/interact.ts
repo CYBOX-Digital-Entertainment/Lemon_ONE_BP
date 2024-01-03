@@ -4,7 +4,6 @@ import { ActionFormData } from "@minecraft/server-ui";
 import { EntityData } from "./class"
 
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
-    console.warn(`a`)
     const { itemStack, player, target } = e
     if (target.typeId != "daewoo:tosca_gb") return;
     const rid = target.getComponent(`minecraft:rideable`) as EntityRideableComponent
