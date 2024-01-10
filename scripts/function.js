@@ -1,4 +1,4 @@
-import { system, world } from "@minecraft/server";
+import { ItemStack, system, world } from "@minecraft/server";
 import { EntityData } from "./class";
 import { saveData } from "./db";
 import { ActionFormData } from "@minecraft/server-ui";
@@ -89,4 +89,7 @@ export function tpTr(data) {
         loc.y += 100;
     }
     tr?.runCommandAsync(`tp ${loc?.x} ${loc?.y} ${loc?.z}`);
+}
+export function on_off(iv, itemName, index) {
+    iv.container.setItem(index, new ItemStack(itemName));
 }
