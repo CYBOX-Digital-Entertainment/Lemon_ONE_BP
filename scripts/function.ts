@@ -95,6 +95,6 @@ export function tpTr(data: EntityData) {
 }
 
 
-export function on_off(iv:EntityInventoryComponent, itemName:string, index:number) {
+export function on_off(iv: EntityInventoryComponent, itemName: string, index: number) {
     iv.container.setItem(index, new ItemStack(itemName))
 }

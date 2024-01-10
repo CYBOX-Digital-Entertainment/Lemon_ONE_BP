@@ -1,6 +1,6 @@
 import { EntityRideableComponent, world } from "@minecraft/server";
 import { readData, saveData } from "./db"
-import { openui, openui2} from "./function"
+import { openui, openui2 } from "./function"
 import { EntityData } from "./class"
 
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {

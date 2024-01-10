@@ -1,12 +1,11 @@
 export class EntityData {
     constructor(data: EntityData | undefined = undefined) {
-        if(data != undefined) {
+        if (data != undefined) {
             this.entid = data.entid
             this.plid = data.plid
             this.trid = data.trid
             this.tropen = data.tropen
             this.ride = data.ride
-            
         } else {
             this.entid = ""
             this.plid = ""
