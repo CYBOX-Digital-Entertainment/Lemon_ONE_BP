@@ -1,6 +1,6 @@
-import { EntityRideableComponent, Player, system, world } from "@minecraft/server";
+import { EntityRideableComponent, world } from "@minecraft/server";
 import { readData, saveData } from "./db"
-import { ActionFormData } from "@minecraft/server-ui";
+import { openui, openui2} from "./function"
 import { EntityData } from "./class"
 
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
@@ -24,69 +24,3 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         }
     }
 })
-
-
-
-function openui(player: Player, entity: EntityData) {
-   const data = new EntityData(entity)
-    system.run(() => {
-        if (data.tropen) {
-            new ActionFormData().button(`운전자 탑승`).button(`트렁크 닫기`).show(player).then(t => {
-                if (t.selection == 1) {
-                    data.setTrOpen(false)
-                    saveData(data.entid, data)
-                    player.sendMessage(`트렁크가 닫혔습니다.`)
-                    world.sendMessage(JSON.stringify(data))
-                } else if (t.selection == 0) {
-                    data.setPlid(player.id)
-                    data.setRide(true)
-                    world.sendMessage(JSON.stringify(data))
-                    saveData(data.entid, data)
-                    player.sendMessage(`이제 자동차에 탑승 할 수 있습니다`)
-                }
-            })
-        } else if (data.tropen == false) {
-            new ActionFormData().button(`운전자 탑승`).button(`트렁크 열기`).show(player).then(t => {
-                if (t.selection == 1) {
-                    data.setTrOpen(true)
-                    saveData(data.entid, data)
-                    player.sendMessage(`트렁크가 열렸습니다.`)
-                    world.sendMessage(JSON.stringify(data))
-                } else if (t.selection == 0) {
-                    data.setPlid(player.id)
-                    data.setRide(true)
-                    world.sendMessage(JSON.stringify(data))
-                    saveData(data.entid, data)
-                    player.sendMessage(`이제 자동차에 탑승 할 수 있습니다`)
-                }
-            })
-        }
-    })
-}
-
-
-
-function openui2(player: Player, entity: EntityData) {
-    system.run(() => {
-        const data = new EntityData(entity)
-        if (entity.tropen) {
-            new ActionFormData().button(`트렁크 닫기`).show(player).then(t => {
-                if (t.selection == 0) {
-                    data.setTrOpen(false)
-                    //saveData(entity.entid, entity2)
-                    player.sendMessage(`트렁크가 닫혔습니다.`)
-                    world.sendMessage(JSON.stringify(data))
-                }
-            })
-        } else if (entity.tropen == false) {
-            new ActionFormData().button(`트렁크 열기`).show(player).then(t => {
-                if (t.selection == 0) {
-                    data.setTrOpen(true)
-                    saveData(entity.entid, data)
-                    player.sendMessage(`트렁크가 열렸습니다.`)
-                    world.sendMessage(JSON.stringify(data))
-                }
-            })
-        }
-    })
-}

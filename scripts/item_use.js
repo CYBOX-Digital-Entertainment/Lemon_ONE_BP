@@ -1,6 +1,9 @@
 import { world, system } from "@minecraft/server";
-import { playAni } from "./useFunction";
+import { playAni } from "./function";
 world.beforeEvents.itemUse.subscribe(({ source, itemStack, cancel }) => {
+    const item = source.getComponent("equippable") ?? undefined;
+    if (item == undefined)
+        return;
     system.run(() => {
         if (itemStack.typeId.startsWith(`addon:`)) {
             cancel = true;

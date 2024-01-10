@@ -1,7 +1,9 @@
-import { world, system } from "@minecraft/server";
-import { playAni } from "./useFunction";
+import { world, system, EquipmentSlot } from "@minecraft/server";
+import { playAni } from "./function";
 
 world.beforeEvents.itemUse.subscribe(({ source, itemStack, cancel }) => {
+    const item = source.getComponent("equippable") ?? undefined as EquipmentSlot | undefined
+    if (item == undefined) return
     system.run(() => {
         if (itemStack.typeId.startsWith(`addon:`)) {
             cancel = true
@@ -37,6 +39,7 @@ world.beforeEvents.itemUse.subscribe(({ source, itemStack, cancel }) => {
             }
             case "addon:roll_down": {
                 playAni(source, "main_windows_close")
+                
                 break;
             }
             case "addon:roll_up": {

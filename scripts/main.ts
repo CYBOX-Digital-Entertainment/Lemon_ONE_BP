@@ -1,8 +1,10 @@
-import { world, ItemStack, system, Dimension, DimensionType, DimensionTypes, TitleDisplayOptions } from "@minecraft/server"
+import { world, ItemStack, system } from "@minecraft/server"
 import "./interact"
 import { readData, saveData } from "./db"
 import { EntityData } from "./class"
-import { tpTr } from "./trTp"
+import { tpTr } from "./function"
+
+//자동차 스폰시 기본 설정
 world.afterEvents.entitySpawn.subscribe(({entity})=>{
     if (readData(entity.id) == undefined && entity.typeId == "daewoo:tosca_gb") {
         const dimension = entity.dimension
