@@ -1,0 +1,17 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:item": {
+		"description": {
+			"identifier": "addon:speed4",
+            "category": "nature"
+		},
+		"components": {
+			"minecraft:icon": {
+				"texture": "speed4"
+			},
+            "minecraft:display_name": {
+                "value": "Speed : ~220km/h"
+            }
+		}
+	}
+}

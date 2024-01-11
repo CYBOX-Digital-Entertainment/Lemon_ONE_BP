@@ -1,0 +1,17 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:item": {
+		"description": {
+			"identifier": "addon:speed3",
+            "category": "nature"
+		},
+		"components": {
+			"minecraft:icon": {
+				"texture": "speed3"
+			},
+            "minecraft:display_name": {
+                "value": "Speed : ~150km/h"
+            }
+		}
+	}
+}

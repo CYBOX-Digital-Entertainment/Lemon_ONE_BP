@@ -1,0 +1,17 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:item": {
+		"description": {
+			"identifier": "addon:speed2",
+            "category": "nature"
+		},
+		"components": {
+			"minecraft:icon": {
+				"texture": "speed2"
+			},
+            "minecraft:display_name": {
+                "value": "Speed : ~100km/h"
+            }
+		}
+	}
+}
