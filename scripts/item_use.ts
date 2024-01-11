@@ -3,7 +3,7 @@ import { playAni, on_off } from "./function";
 
 world.beforeEvents.itemUse.subscribe(({ source, itemStack, cancel }) => {
     const iv = source.getComponent(EntityInventoryComponent.componentId) as EntityInventoryComponent
-    const index = 0// 추후 플래이어의 메인헨드 인덱스를 불러와 기입할것
+    const index = source.selectedSlot; // 추후 플래이어의 메인헨드 인덱스를 불러와 기입할것
     system.run(() => {
         if (itemStack.typeId.startsWith(`addon:`)) {
             cancel = true
