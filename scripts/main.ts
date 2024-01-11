@@ -6,10 +6,10 @@ import { tpTr } from "./function"
 
 //자동차 스폰시 기본 설정
 world.afterEvents.entitySpawn.subscribe(({ entity }) => {
-    if (readData(entity.id) == undefined && entity.typeId == "daewoo:tosca_gb") {
+    if (readData(entity.id) == undefined && entity.typeId == "cybox:dw_tosca") {
         const dimension = entity.dimension
         const tr = entity.dimension.spawnEntity(`addon:tr`, entity.location)
-        const itemStack = new ItemStack(`key:key`, 1)
+        const itemStack = new ItemStack(`key:dw_tosca_key`, 1)
         itemStack.setLore([`등록된 자동차 아이디 : ${entity.id}`])
         entity.dimension.spawnItem(itemStack, entity.location)
         const data = new EntityData()
@@ -24,19 +24,19 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
 //렉 방지를 위해 10틱(0.5초)마다 반복
 system.runInterval(() => {
     world.getDimension(`overworld`).getEntities({
-        type: "daewoo:tosca_gb"
+        type: "cybox:dw_tosca"
     }).forEach(f => {
         const data = readData(f.id) as EntityData
         tpTr(data)
     })
     world.getDimension(`the_end`).getEntities({
-        type: "daewoo:tosca_gb"
+        type: "cybox:dw_tosca"
     }).forEach(f => {
         const data = readData(f.id) as EntityData
         tpTr(data)
     })
     world.getDimension(`nether`).getEntities({
-        type: "daewoo:tosca_gb"
+        type: "cybox:dw_tosca"
     }).forEach(f => {
         const data = readData(f.id) as EntityData
         tpTr(data)

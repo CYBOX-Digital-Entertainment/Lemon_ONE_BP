@@ -1,11 +1,11 @@
-import { Component, EntityInventoryComponent, EntityRideableComponent, ItemStack, Player, system, world } from "@minecraft/server";
+import { EntityInventoryComponent, EntityRideableComponent, ItemStack, Player, system, world } from "@minecraft/server";
 import { EntityData } from "./class"
 import { saveData } from "./db"
 import { ActionFormData } from "@minecraft/server-ui";
 
 export function playAni(player: Player, eventName: string) {
     player.dimension.getEntities({
-        type: "daewoo:tosca_gb",
+        type: "cybox:dw_tosca",
         tags: [`id:${player.id}`] // 변경 된 코드에 따라 수정 예정
     }).forEach(f => {
         const rid = f.getComponent(`minecraft:rideable`) as EntityRideableComponent

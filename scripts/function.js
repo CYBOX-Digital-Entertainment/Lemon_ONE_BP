@@ -4,7 +4,7 @@ import { saveData } from "./db";
 import { ActionFormData } from "@minecraft/server-ui";
 export function playAni(player, eventName) {
     player.dimension.getEntities({
-        type: "daewoo:tosca_gb",
+        type: "cybox:dw_tosca",
         tags: [`id:${player.id}`] // 변경 된 코드에 따라 수정 예정
     }).forEach(f => {
         const rid = f.getComponent(`minecraft:rideable`);
