@@ -1,8 +1,13 @@
-import { world } from "@minecraft/server";
+import { EntityRideableComponent, system, world } from "@minecraft/server";
 import { readData } from "./db";
 import { openui, openui2 } from "./function";
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     const { itemStack, player, target } = e;
+    if (itemStack?.typeId == "minecraft:stick") {
+        system.run(() => {
+            console.warn(player.getComponent(EntityRideableComponent.componentId)?.addRider(target));
+        });
+    }
     if (target.typeId != "cybox:dw_tosca")
         return;
     const rid = target.getComponent(`minecraft:rideable`);

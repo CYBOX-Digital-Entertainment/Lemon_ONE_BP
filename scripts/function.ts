@@ -15,8 +15,10 @@ export function playAni(player: Player, eventName: string) {
     })
 }
 
-export function openui(player: Player, entity: EntityData) {
-    const data = new EntityData(entity)
+export function openui(player: Player, entitydata: EntityData) {
+    const data = new EntityData(entitydata)
+    const entity = data.entity()
+    if (entity == undefined) return
     system.run(() => {
         if (data.tropen) {
             new ActionFormData().button(`운전자 탑승`).button(`트렁크 닫기`).show(player).then(t => {
@@ -27,10 +29,10 @@ export function openui(player: Player, entity: EntityData) {
                     world.sendMessage(JSON.stringify(data))
                 } else if (t.selection == 0) {
                     data.setPlid(player.id)
-                    data.setRide(true)
+                    //data.setRide(true)
                     world.sendMessage(JSON.stringify(data))
                     saveData(data.entid, data)
-                    player.runCommandAsync(``)// 탑승 명령어 추가 예정
+                    console.warn(entity.getComponent(EntityRideableComponent.componentId)?.addRider(player))
                     player.sendMessage(`이제 자동차에 탑승 할 수 있습니다`)
                 }
             })
@@ -43,9 +45,9 @@ export function openui(player: Player, entity: EntityData) {
                     world.sendMessage(JSON.stringify(data))
                 } else if (t.selection == 0) {
                     data.setPlid(player.id)
-                    data.setRide(true)
+                    //data.setRide(true)
                     world.sendMessage(JSON.stringify(data))
-                    player.runCommandAsync(``)// 탑승 명령어 추가 예정
+                    console.warn(entity.getComponent(EntityRideableComponent.componentId)?.addRider(player))
                     saveData(data.entid, data)
                     player.sendMessage(`이제 자동차에 탑승 할 수 있습니다`)
                 }
@@ -96,5 +98,5 @@ export function tpTr(data: EntityData) {
 
 
 export function on_off(iv: EntityInventoryComponent, itemName: string, index: number) {
-    iv.container.setItem(index, new ItemStack(itemName))
+    iv?.container?.setItem(index, new ItemStack(itemName))
 }

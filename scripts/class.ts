@@ -1,3 +1,5 @@
+import { Entity, world } from "@minecraft/server"
+
 export class EntityData {
     constructor(data: EntityData | undefined = undefined) {
         if (data != undefined) {
@@ -38,5 +40,8 @@ export class EntityData {
     setRide(ride: boolean): EntityData {
         this.ride = ride
         return this
+    }
+    entity():Entity | undefined {
+        return world.getEntity(this.entid)
     }
 }

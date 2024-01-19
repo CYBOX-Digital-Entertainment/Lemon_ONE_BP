@@ -1,10 +1,17 @@
-import { EntityRideableComponent, world } from "@minecraft/server";
+import { EntityRideableComponent, system, world } from "@minecraft/server";
 import { readData } from "./db"
 import { openui, openui2 } from "./function"
 import { EntityData } from "./class"
 
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     const { itemStack, player, target } = e
+    if ( itemStack?.typeId == "minecraft:stick") {
+        system.run(()=>{
+            console.warn(player.getComponent(EntityRideableComponent.componentId)?.addRider(target))
+        })
+        
+        
+    }
     if (target.typeId != "cybox:dw_tosca") return;
     const rid = target.getComponent(`minecraft:rideable`) as EntityRideableComponent
     const data = readData(target.id) as EntityData
@@ -14,6 +21,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         return
 
     }
+
     if (itemStack?.typeId == "key:dw_tosca_key" && itemStack?.getLore()[0].slice(14) == target.id) {
         e.cancel = true
         console.warn(!data.ride)

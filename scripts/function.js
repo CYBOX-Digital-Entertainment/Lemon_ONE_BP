@@ -1,4 +1,4 @@
-import { ItemStack, system, world } from "@minecraft/server";
+import { EntityRideableComponent, ItemStack, system, world } from "@minecraft/server";
 import { EntityData } from "./class";
 import { saveData } from "./db";
 import { ActionFormData } from "@minecraft/server-ui";
@@ -13,8 +13,11 @@ export function playAni(player, eventName) {
         }
     });
 }
-export function openui(player, entity) {
-    const data = new EntityData(entity);
+export function openui(player, entitydata) {
+    const data = new EntityData(entitydata);
+    const entity = data.entity();
+    if (entity == undefined)
+        return;
     system.run(() => {
         if (data.tropen) {
             new ActionFormData().button(`운전자 탑승`).button(`트렁크 닫기`).show(player).then(t => {
@@ -26,10 +29,10 @@ export function openui(player, entity) {
                 }
                 else if (t.selection == 0) {
                     data.setPlid(player.id);
-                    data.setRide(true);
+                    //data.setRide(true)
                     world.sendMessage(JSON.stringify(data));
                     saveData(data.entid, data);
-                    player.runCommandAsync(``); // 탑승 명령어 추가 예정
+                    console.warn(entity.getComponent(EntityRideableComponent.componentId)?.addRider(player));
                     player.sendMessage(`이제 자동차에 탑승 할 수 있습니다`);
                 }
             });
@@ -44,9 +47,9 @@ export function openui(player, entity) {
                 }
                 else if (t.selection == 0) {
                     data.setPlid(player.id);
-                    data.setRide(true);
+                    //data.setRide(true)
                     world.sendMessage(JSON.stringify(data));
-                    player.runCommandAsync(``); // 탑승 명령어 추가 예정
+                    console.warn(entity.getComponent(EntityRideableComponent.componentId)?.addRider(player));
                     saveData(data.entid, data);
                     player.sendMessage(`이제 자동차에 탑승 할 수 있습니다`);
                 }
@@ -91,5 +94,5 @@ export function tpTr(data) {
     tr?.runCommandAsync(`tp ${loc?.x} ${loc?.y} ${loc?.z}`);
 }
 export function on_off(iv, itemName, index) {
-    iv.container.setItem(index, new ItemStack(itemName));
+    iv?.container?.setItem(index, new ItemStack(itemName));
 }
