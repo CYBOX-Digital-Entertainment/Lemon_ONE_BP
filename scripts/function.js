@@ -4,8 +4,7 @@ import { saveData } from "./db";
 import { ActionFormData } from "@minecraft/server-ui";
 export function playAni(player, eventName) {
     player.dimension.getEntities({
-        type: "cybox:dw_tosca",
-        tags: [`id:${player.id}`] // 변경 된 코드에 따라 수정 예정
+        type: "cybox:dw_tosca"
     }).forEach(f => {
         const rid = f.getComponent(`minecraft:rideable`);
         if (rid.getRiders()[0].id == player.id) {
@@ -32,8 +31,8 @@ export function openui(player, entitydata) {
                     //data.setRide(true)
                     world.sendMessage(JSON.stringify(data));
                     saveData(data.entid, data);
-                    console.warn(entity.getComponent(EntityRideableComponent.componentId)?.addRider(player));
-                    player.sendMessage(`이제 자동차에 탑승 할 수 있습니다`);
+
+                    world.getEntity(data.entid).runCommand(`ride @a[name="${player.name}"] start_riding @s`)
                 }
             });
         }
@@ -49,9 +48,9 @@ export function openui(player, entitydata) {
                     data.setPlid(player.id);
                     //data.setRide(true)
                     world.sendMessage(JSON.stringify(data));
-                    console.warn(entity.getComponent(EntityRideableComponent.componentId)?.addRider(player));
                     saveData(data.entid, data);
-                    player.sendMessage(`이제 자동차에 탑승 할 수 있습니다`);
+                    
+                    world.getEntity(data.entid).runCommand(`ride @a[name="${player.name}"] start_riding @s`)
                 }
             });
         }
