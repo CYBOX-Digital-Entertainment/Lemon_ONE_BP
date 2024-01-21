@@ -1,57 +1,78 @@
-import { EntityInventoryComponent, EntityRideableComponent, ItemStack, Player, system, world } from "@minecraft/server";
+import {
+    Entity,
+    EntityInventoryComponent,
+    EntityRideableComponent,
+    ItemStack,
+    Player,
+    system,
+    world
+} from "@minecraft/server";
 import { EntityData } from "./class"
-import { saveData } from "./db"
+import { readData, saveData } from "./db"
 import { ActionFormData } from "@minecraft/server-ui";
 
-export function playAni(player: Player, eventName: string) {
-    player.dimension.getEntities({
-        type: "cybox:dw_tosca",
-        tags: [`id:${player.id}`] // 변경 된 코드에 따라 수정 예정
-    }).forEach(f => {
-        const rid = f.getComponent(`minecraft:rideable`) as EntityRideableComponent
-        if (rid.getRiders()[0].id == player.id) {
-            f.triggerEvent(eventName)
+function getCar(player: Player) {
+    const cars = player.dimension.getEntities({ type: "cybox:dw_tosca" });
+    for (const car of cars) {
+        let rideable = car.getComponent(EntityRideableComponent.componentId);
+        if (rideable?.getRiders()[0].id === player.id) {
+            return car;
         }
-    })
+    }
+
+    throw new Error("Failed to get car");
 }
 
-export function openui(player: Player, entitydata: EntityData) {
-    const data = new EntityData(entitydata)
+export function playAni(player: Player, eventName: string) {
+    getCar(player).triggerEvent(eventName);
+}
+
+export function openui(player: Player, entityData: EntityData) {
+    const data = new EntityData(entityData)
     const entity = data.entity()
-    if (entity == undefined) return
+    if (entity === undefined) {
+        return
+    }
+
     system.run(() => {
         if (data.tropen) {
-            new ActionFormData().button(`운전자 탑승`).button(`트렁크 닫기`).show(player).then(t => {
-                if (t.selection == 1) {
-                    data.setTrOpen(false)
-                    saveData(data.entid, data)
-                    player.sendMessage(`트렁크가 닫혔습니다.`)
-                    world.sendMessage(JSON.stringify(data))
-                } else if (t.selection == 0) {
-                    data.setPlid(player.id)
-                    //data.setRide(true)
-                    world.sendMessage(JSON.stringify(data))
-                    saveData(data.entid, data)
-                    console.warn(entity.getComponent(EntityRideableComponent.componentId)?.addRider(player))
-                    player.sendMessage(`이제 자동차에 탑승 할 수 있습니다`)
-                }
-            })
-        } else if (data.tropen == false) {
-            new ActionFormData().button(`운전자 탑승`).button(`트렁크 열기`).show(player).then(t => {
-                if (t.selection == 1) {
-                    data.setTrOpen(true)
-                    saveData(data.entid, data)
-                    player.sendMessage(`트렁크가 열렸습니다.`)
-                    world.sendMessage(JSON.stringify(data))
-                } else if (t.selection == 0) {
-                    data.setPlid(player.id)
-                    //data.setRide(true)
-                    world.sendMessage(JSON.stringify(data))
-                    console.warn(entity.getComponent(EntityRideableComponent.componentId)?.addRider(player))
-                    saveData(data.entid, data)
-                    player.sendMessage(`이제 자동차에 탑승 할 수 있습니다`)
-                }
-            })
+            new ActionFormData()
+                .button(`운전자 탑승`)
+                .button(`트렁크 닫기`)
+                .show(player)
+                .then(result => {
+                    if (result.selection == 1) {
+                        data.setTrOpen(false)
+                        saveData(data.entid, data)
+                        player.sendMessage(`트렁크가 닫혔습니다.`)
+                        entity.triggerEvent("bonnet_close");
+                        world.sendMessage(JSON.stringify(data))
+                    } else if (result.selection == 0) {
+                        data.setPlid(player.id)
+                        world.sendMessage(JSON.stringify(data))
+                        saveData(data.entid, data)
+                        world.getEntity(data.entid)?.runCommand(`ride @p[name=${player.name}] start_riding @s`);
+                    }
+                })
+        } else if (!data.tropen) {
+            new ActionFormData()
+                .button(`운전자 탑승`)
+                .button(`트렁크 열기`)
+                .show(player)
+                .then(result => {
+                    if (result.selection == 1) {
+                        data.setTrOpen(true)
+                        saveData(data.entid, data)
+                        player.sendMessage(`트렁크가 열렸습니다.`)
+                        entity.triggerEvent("bonnet_open");
+                        world.sendMessage(JSON.stringify(data))
+                    } else if (result.selection == 0) {
+                        data.setPlid(player.id)
+                        world.sendMessage(JSON.stringify(data))
+                        saveData(data.entid, data)
+                        world.getEntity(data.entid)?.runCommand(`ride @p[name=${player.name}] start_riding @s`);
+                    }
+                })
         }
     })
 }

@@ -11,6 +11,7 @@ export function readData(varname: string): object | string | undefined {
         if (getValue == undefined) {
             return undefined
         }
+
         return JSON.parse(`${getValue}`);
     } catch (error) {
         return `${world.getDynamicProperty(varname)}`;
