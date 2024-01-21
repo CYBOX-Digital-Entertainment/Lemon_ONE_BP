@@ -1,14 +1,6 @@
-import {
-    Entity,
-    EntityInventoryComponent,
-    EntityRideableComponent,
-    ItemStack,
-    Player,
-    system,
-    world
-} from "@minecraft/server";
+import { EntityInventoryComponent, EntityRideableComponent, ItemStack, Player, system, world } from "@minecraft/server";
 import { EntityData } from "./class"
-import { readData, saveData } from "./db"
+import { saveData } from "./db"
 import { ActionFormData } from "@minecraft/server-ui";
 
 function getCar(player: Player) {
@@ -91,7 +83,7 @@ export function openui2(player: Player, entity: EntityData) {
                     world.sendMessage(JSON.stringify(data))
                 }
             })
-        } else if (entity.tropen == false) {
+        } else if (!entity.tropen) {
             new ActionFormData().button(`트렁크 열기`).show(player).then(t => {
                 if (t.selection == 0) {
                     data.setTrOpen(true)

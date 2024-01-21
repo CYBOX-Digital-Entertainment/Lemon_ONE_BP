@@ -1,4 +1,4 @@
-import { world, ItemStack, system, EntityInventoryComponent, Entity, Player } from "@minecraft/server"
+import { EntityInventoryComponent, ItemStack, system, world } from "@minecraft/server"
 import "./interact"
 import { readData, saveData } from "./db"
 import { EntityData } from "./class"
