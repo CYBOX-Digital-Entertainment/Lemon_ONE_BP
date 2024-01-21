@@ -1,0 +1,50 @@
+import { EntityInventoryComponent, ItemStack, system, world } from "@minecraft/server";
+import "./interact";
+import { readData, saveData } from "./db";
+import { EntityData } from "./class";
+import { tpTr } from "./function";
+let waitingItemStack;
+world.afterEvents.itemUseOn.subscribe(({ source, itemStack }) => {
+    if (itemStack.typeId === "cybox:dw_tosca_spawn_egg") {
+        source.getComponent(EntityInventoryComponent.componentId)
+            ?.container
+            ?.addItem(waitingItemStack);
+    }
+});
+//자동차 스폰시 기본 설정
+world.afterEvents.entitySpawn.subscribe(({ entity }) => {
+    if (readData(entity.id) === undefined && entity.typeId == "cybox:dw_tosca") {
+        const tr = entity.dimension.spawnEntity(`addon:tr`, entity.location);
+        const data = new EntityData();
+        data.setTrId(tr.id);
+        data.setEntId(entity.id);
+        saveData(entity.id, data);
+        waitingItemStack = new ItemStack("key:dw_tosca_key", 1);
+        waitingItemStack.setLore([`등록된 자동차 아이디 : ${entity.id}`]);
+        world.sendMessage(JSON.stringify(data));
+    }
+});
+const overworld = world.getDimension(`overworld`);
+const end = world.getDimension(`the_end`);
+const nether = world.getDimension(`nether`);
+//렉 방지를 위해 10틱(0.5초)마다 반복
+system.runInterval(() => {
+    overworld.getEntities({
+        type: "cybox:dw_tosca"
+    }).forEach(f => {
+        const data = readData(f.id);
+        tpTr(data);
+    });
+    end.getEntities({
+        type: "cybox:dw_tosca"
+    }).forEach(f => {
+        const data = readData(f.id);
+        tpTr(data);
+    });
+    nether.getEntities({
+        type: "cybox:dw_tosca"
+    }).forEach(f => {
+        const data = readData(f.id);
+        tpTr(data);
+    });
+}, 10);
