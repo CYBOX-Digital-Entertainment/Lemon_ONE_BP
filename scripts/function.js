@@ -1,6 +1,6 @@
 import { EntityRideableComponent, ItemStack, system, world } from "@minecraft/server";
 import { EntityData } from "./class";
-import { saveData } from "./db";
+import { readData, saveData } from "./db";
 import { ActionFormData } from "@minecraft/server-ui";
 function getCar(player) {
     const cars = player.dimension.getEntities({ type: "cybox:dw_tosca" });
@@ -37,9 +37,10 @@ export function openui(player, entityData) {
                 }
                 else if (result.selection == 0) {
                     data.setPlid(player.id);
+                    data.setRide(true);
                     world.sendMessage(JSON.stringify(data));
                     saveData(data.entid, data);
-                    world.getEntity(data.entid)?.runCommand(`ride @p[name=${player.name}] start_riding @s`);
+                    entity.triggerEvent("right_front_door_open");
                 }
             });
         }
@@ -58,9 +59,10 @@ export function openui(player, entityData) {
                 }
                 else if (result.selection == 0) {
                     data.setPlid(player.id);
+                    data.setRide(true);
                     world.sendMessage(JSON.stringify(data));
                     saveData(data.entid, data);
-                    world.getEntity(data.entid)?.runCommand(`ride @p[name=${player.name}] start_riding @s`);
+                    entity.triggerEvent("right_front_door_open");
                 }
             });
         }
@@ -104,4 +106,15 @@ export function tpTr(data) {
 }
 export function on_off(iv, itemName, index) {
     iv?.container?.setItem(index, new ItemStack(itemName));
+}
+export function loop(entity) {
+    const data = readData(entity.id);
+    tpTr(data);
+    const component = entity.getComponent(EntityRideableComponent.componentId);
+    if (component?.getRiders()[0] !== undefined) {
+        entity.triggerEvent("right_front_door_close");
+    }
+    if (component?.getRiders()[0]?.id !== data.plid) {
+        component?.ejectRiders();
+    }
 }

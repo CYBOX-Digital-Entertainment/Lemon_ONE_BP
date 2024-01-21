@@ -2,7 +2,7 @@ import { EntityInventoryComponent, ItemStack, system, world } from "@minecraft/s
 import "./interact";
 import { readData, saveData } from "./db";
 import { EntityData } from "./class";
-import { tpTr } from "./function";
+import { loop } from "./function";
 let waitingItemStack;
 world.afterEvents.itemUseOn.subscribe(({ source, itemStack }) => {
     if (itemStack.typeId === "cybox:dw_tosca_spawn_egg") {
@@ -32,19 +32,16 @@ system.runInterval(() => {
     overworld.getEntities({
         type: "cybox:dw_tosca"
     }).forEach(f => {
-        const data = readData(f.id);
-        tpTr(data);
+        loop(f);
     });
     end.getEntities({
         type: "cybox:dw_tosca"
     }).forEach(f => {
-        const data = readData(f.id);
-        tpTr(data);
+        loop(f);
     });
     nether.getEntities({
         type: "cybox:dw_tosca"
     }).forEach(f => {
-        const data = readData(f.id);
-        tpTr(data);
+        loop(f);
     });
 }, 10);

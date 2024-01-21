@@ -2,7 +2,7 @@ import { EntityInventoryComponent, ItemStack, system, world } from "@minecraft/s
 import "./interact"
 import { readData, saveData } from "./db"
 import { EntityData } from "./class"
-import { tpTr } from "./function"
+import { loop, tpTr } from "./function"
 
 let waitingItemStack: ItemStack | undefined;
 
@@ -22,10 +22,8 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         data.setTrId(tr.id);
         data.setEntId(entity.id);
         saveData(entity.id, data);
-
         waitingItemStack = new ItemStack("key:dw_tosca_key", 1);
         waitingItemStack.setLore([`등록된 자동차 아이디 : ${entity.id}`]);
-
         world.sendMessage(JSON.stringify(data));
     }
 });
@@ -39,21 +37,18 @@ system.runInterval(() => {
     overworld.getEntities({
         type: "cybox:dw_tosca"
     }).forEach(f => {
-        const data = readData(f.id) as EntityData
-        tpTr(data)
+        loop(f)
     });
 
     end.getEntities({
         type: "cybox:dw_tosca"
     }).forEach(f => {
-        const data = readData(f.id) as EntityData
-        tpTr(data)
+        loop(f)
     });
 
     nether.getEntities({
         type: "cybox:dw_tosca"
     }).forEach(f => {
-        const data = readData(f.id) as EntityData
-        tpTr(data)
+        loop(f)
     });
 }, 10);

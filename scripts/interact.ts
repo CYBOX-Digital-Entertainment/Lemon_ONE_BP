@@ -6,19 +6,12 @@ import { ActionFormData } from "@minecraft/server-ui";
 
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     const { itemStack, player, target } = e
-    if ( itemStack?.typeId == "minecraft:stick") {
-        system.run(()=>{
-            console.warn(player.getComponent(EntityRideableComponent.componentId)?.addRider(target))
-        })
-    }
-
-    if (target.typeId != "cybox:dw_tosca") {
+    if (target.typeId != "cybox:dw_tosca" || itemStack?.typeId === "cybox:dw_tosca_spawn_egg" || itemStack?.typeId.startsWith(`cybox:`)) {
         return;
     }
-
     const rid = target.getComponent(`minecraft:rideable`) as EntityRideableComponent
     const data = readData(target.id) as EntityData
-    if (itemStack?.typeId.startsWith(`addon:`) || (!data.ride && itemStack?.getLore()[0]?.slice(14) != target.id)) {
+    if (itemStack?.typeId.startsWith(`addon:`) || (!data.ride && itemStack?.getLore()[0]?.slice(14) != target.id) || ( data.ride || ( rid.getRiders()[0]?.id !== data.plid  && player.id !== data.plid))) {
         e.cancel = true
         console.warn(`cancel`)
         return;
