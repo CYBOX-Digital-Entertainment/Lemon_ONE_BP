@@ -11,7 +11,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     }
     const rid = target.getComponent(`minecraft:rideable`) as EntityRideableComponent
     const data = readData(target.id) as EntityData
-    if (itemStack?.typeId.startsWith(`addon:`) || (!data.ride && itemStack?.getLore()[0]?.slice(14) != target.id) || ( data.ride || ( rid.getRiders()[0]?.id !== data.plid  && player.id !== data.plid))) {
+    if (itemStack?.typeId != "key:dw_tosca_key" && (!data.ride || (data.ride && rid.getRiders()[0].id !== data.plid))) {
         e.cancel = true
         console.warn(`cancel`)
         return;
@@ -21,7 +21,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         e.cancel = true
         if (rid.getRiders()[0]?.id === player.id || rid.getRiders()[0]?.id === data.plid || data.ride) {
             let entity = target;
-
             if(!world?.getDynamicProperty(`car:${entity.id}`)) {
                 world.setDynamicProperty(`car:${ entity.id }`, JSON.stringify({
                     headLight: false, // 헤드라이트
@@ -31,7 +30,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     speed: 30
                 }));
             }
-
             const speed = [30, 70, 100, 150, 220];
             const data = JSON.parse(world.getDynamicProperty(`car:${entity.id}`) as string);
 
