@@ -71,34 +71,6 @@ export function openui(player: Player, entityData: EntityData) {
 }
 
 
-
-export function openui2(player: Player, entity: EntityData) {
-    system.run(() => {
-        const data = new EntityData(entity)
-        if (entity.tropen) {
-            new ActionFormData().button(`트렁크 닫기`).show(player).then(t => {
-                if (t.selection == 0) {
-                    data.setTrOpen(false)
-                    saveData(entity.entid, data)
-                    player.sendMessage(`트렁크가 닫혔습니다.`)
-                    world.sendMessage(JSON.stringify(data))
-                }
-            })
-        } else if (!entity.tropen) {
-            new ActionFormData().button(`트렁크 열기`).show(player).then(t => {
-                if (t.selection == 0) {
-                    data.setTrOpen(true)
-                    saveData(entity.entid, data)
-                    player.sendMessage(`트렁크가 열렸습니다.`)
-                    world.sendMessage(JSON.stringify(data))
-                }
-            })
-        }
-    })
-}
-
-
-
 export function tpTr(data: EntityData) {
     const tr = world.getEntity(data.trid)
     const ent = world.getEntity(data.entid)
@@ -124,6 +96,7 @@ export function loop(entity :Entity) {
         component?.ejectRiders()
         data.setRide(false)
         data.ride2 = false
+        data.option = false
         data.setPlid("")
         saveData(entity.id, data)
     }

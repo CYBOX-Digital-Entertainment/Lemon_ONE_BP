@@ -8,8 +8,9 @@ export class EntityData {
         this.tropen = data?.tropen ?? false;
         this.ride = data?.ride ?? false;
         this.ride2 = data?.ride2 ?? false
+        this.option = data?.option ?? false
     }
-
+    option: boolean
     plid: string
     tropen: boolean
     entid: string
