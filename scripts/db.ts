@@ -1,6 +1,10 @@
 import { world } from "@minecraft/server";
 
-export function saveData(varname: string, value: number | object | string | boolean) {
+export function saveData(varname: string, value: number | object | string | boolean | undefined) {
+    if (value === undefined) {
+        world.setDynamicProperty(varname, undefined);
+        return;
+    }
     const mkValue = JSON.stringify(value);
     world.setDynamicProperty(varname, mkValue);
 }
