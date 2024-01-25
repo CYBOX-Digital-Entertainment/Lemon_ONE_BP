@@ -7,6 +7,7 @@ export class EntityData {
         this.trid = data?.trid ?? "";
         this.tropen = data?.tropen ?? false;
         this.ride = data?.ride ?? false;
+        this.ride2 = data?.ride2 ?? false
     }
 
     plid: string
@@ -14,7 +15,7 @@ export class EntityData {
     entid: string
     trid: string
     ride: boolean
-
+    ride2: boolean
     setPlid(id: string): EntityData {
         this.plid = id
         return this

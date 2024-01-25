@@ -40,7 +40,7 @@ export function openui(player: Player, entityData: EntityData) {
                         world.sendMessage(JSON.stringify(data))
                     } else if (result.selection == 0) {
                         data.setPlid(player.id)
-                        data.setRide(true)
+                        data.ride2 = true
                         world.sendMessage(JSON.stringify(data))
                         saveData(data.entid, data)
                         entity.triggerEvent("right_front_door_open")
@@ -60,7 +60,7 @@ export function openui(player: Player, entityData: EntityData) {
                         world.sendMessage(JSON.stringify(data))
                     } else if (result.selection == 0) {
                         data.setPlid(player.id)
-                        data.setRide(true)
+                        data.ride2 = true
                         world.sendMessage(JSON.stringify(data))
                         saveData(data.entid, data)
                         entity.triggerEvent("right_front_door_open")
@@ -116,13 +116,15 @@ export function on_off(iv: EntityInventoryComponent, itemName: string, index: nu
 }
 
 export function loop(entity :Entity) {
-    const data = readData(entity.id) as EntityData
+    const data = new EntityData(readData(entity.id) as EntityData)    
     tpTr(data)
     const component = entity.getComponent(EntityRideableComponent.componentId)
-    if (component?.getRiders()[0] !== undefined) {
-        entity.triggerEvent("right_front_door_close")
-    }
-    if (component?.getRiders()[0]?.id !== data.plid) {
+    
+    if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         component?.ejectRiders()
+        data.setRide(false)
+        data.ride2 = false
+        data.setPlid("")
+        saveData(entity.id, data)
     }
 }

@@ -37,7 +37,7 @@ export function openui(player, entityData) {
                 }
                 else if (result.selection == 0) {
                     data.setPlid(player.id);
-                    data.setRide(true);
+                    data.ride2 = true;
                     world.sendMessage(JSON.stringify(data));
                     saveData(data.entid, data);
                     entity.triggerEvent("right_front_door_open");
@@ -59,7 +59,7 @@ export function openui(player, entityData) {
                 }
                 else if (result.selection == 0) {
                     data.setPlid(player.id);
-                    data.setRide(true);
+                    data.ride2 = true;
                     world.sendMessage(JSON.stringify(data));
                     saveData(data.entid, data);
                     entity.triggerEvent("right_front_door_open");
@@ -108,13 +108,14 @@ export function on_off(iv, itemName, index) {
     iv?.container?.setItem(index, new ItemStack(itemName));
 }
 export function loop(entity) {
-    const data = readData(entity.id);
+    const data = new EntityData(readData(entity.id));
     tpTr(data);
     const component = entity.getComponent(EntityRideableComponent.componentId);
-    if (component?.getRiders()[0] !== undefined) {
-        entity.triggerEvent("right_front_door_close");
-    }
-    if (component?.getRiders()[0]?.id !== data.plid) {
+    if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         component?.ejectRiders();
+        data.setRide(false);
+        data.ride2 = false;
+        data.setPlid("");
+        saveData(entity.id, data);
     }
 }

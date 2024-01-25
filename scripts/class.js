@@ -6,6 +6,7 @@ export class EntityData {
         this.trid = data?.trid ?? "";
         this.tropen = data?.tropen ?? false;
         this.ride = data?.ride ?? false;
+        this.ride2 = data?.ride2 ?? false;
     }
     setPlid(id) {
         this.plid = id;

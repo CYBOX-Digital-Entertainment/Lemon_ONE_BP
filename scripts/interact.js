@@ -1,5 +1,5 @@
 import { system, world } from "@minecraft/server";
-import { readData } from "./db";
+import { readData, saveData } from "./db";
 import { openui, playAni } from "./function";
 import { ActionFormData } from "@minecraft/server-ui";
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
@@ -9,9 +9,19 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     }
     const rid = target.getComponent(`minecraft:rideable`);
     const data = readData(target.id);
-    if (itemStack?.typeId != "key:dw_tosca_key" && (!data.ride || (data.ride && rid.getRiders()[0].id !== data.plid))) {
+    if (itemStack?.typeId != "key:dw_tosca_key" && ((!data.ride2 && player.id !== data.plid) || !data.ride2)) {
         e.cancel = true;
         console.warn(`cancel`);
+        return;
+    }
+    else if (itemStack?.typeId != "key:dw_tosca_key" && (!data.ride && data.ride2 && player.id === data.plid)) {
+        data.ride = true;
+        data.ride2 = false;
+        console.warn("a");
+        system.run(() => {
+            target.triggerEvent(`right_front_door_open`);
+        });
+        saveData(target.id, data);
         return;
     }
     if (itemStack?.typeId == "key:dw_tosca_key" && itemStack?.getLore()[0].slice(14) == target.id) {
@@ -133,5 +143,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         else {
             openui(player, data);
         }
+    }
+    else if (itemStack?.getLore()[0].slice(14) != target.id) {
+        e.cancel = true;
     }
 });
