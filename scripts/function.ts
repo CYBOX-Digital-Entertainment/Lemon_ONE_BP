@@ -87,17 +87,18 @@ export function on_off(iv: EntityInventoryComponent, itemName: string, index: nu
     iv?.container?.setItem(index, new ItemStack(itemName))
 }
 
-export function loop(entity :Entity) {
-    const data = new EntityData(readData(entity.id) as EntityData)    
+export function loop(entity: Entity) {
+    const data = new EntityData(readData(entity.id) as EntityData)
     tpTr(data)
     const component = entity.getComponent(EntityRideableComponent.componentId)
-    
+
     if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         component?.ejectRiders()
         data.setRide(false)
         data.ride2 = false
         data.option = false
         data.setPlid("")
+        entity.triggerEvent(`car_stop`)
         saveData(entity.id, data)
     }
 }

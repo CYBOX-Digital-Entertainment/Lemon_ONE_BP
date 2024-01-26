@@ -2,25 +2,27 @@ import { EntityInventoryComponent, ItemStack, system, world } from "@minecraft/s
 import "./interact"
 import { readData, saveData } from "./db"
 import { EntityData } from "./class"
-import { loop, tpTr } from "./function"
+import { loop } from "./function"
 
 let waitingItemStack: ItemStack | undefined;
 
 world.afterEvents.itemUseOn.subscribe(({ source, itemStack }) => {
     if (itemStack.typeId === "cybox:dw_tosca_spawn_egg") {
         source.getComponent(EntityInventoryComponent.componentId)
-          ?.container
-          ?.addItem(waitingItemStack!);
+            ?.container
+            ?.addItem(waitingItemStack!);
     }
 })
 
 //차량 엔티티가 파괴될 때 트렁크 삭제 및 데이터 삭제
-world.afterEvents.entityDie.subscribe(res=>{
+world.afterEvents.entityDie.subscribe(res => {
     const entity = res.deadEntity
-    const data = readData(entity.id) as EntityData
-    world.getEntity(data.trid)?.kill()
-    saveData(entity.id, undefined)
-    saveData(`car:${entity.id}`, undefined)
+    if (entity.typeId == "cybox:dw_tosca") {
+        const data = readData(entity.id) as EntityData
+        world.getEntity(data.trid)?.kill()
+        saveData(entity.id, undefined)
+        saveData(`car:${entity.id}`, undefined)
+    }
 })
 
 //자동차 스폰시 기본 설정

@@ -14,10 +14,12 @@ world.afterEvents.itemUseOn.subscribe(({ source, itemStack }) => {
 //차량 엔티티가 파괴될 때 트렁크 삭제 및 데이터 삭제
 world.afterEvents.entityDie.subscribe(res => {
     const entity = res.deadEntity;
-    const data = readData(entity.id);
-    world.getEntity(data.trid)?.kill();
-    saveData(entity.id, undefined);
-    saveData(`car:${entity.id}`, undefined);
+    if (entity.typeId == "cybox:dw_tosca") {
+        const data = readData(entity.id);
+        world.getEntity(data.trid)?.kill();
+        saveData(entity.id, undefined);
+        saveData(`car:${entity.id}`, undefined);
+    }
 });
 //자동차 스폰시 기본 설정
 world.afterEvents.entitySpawn.subscribe(({ entity }) => {

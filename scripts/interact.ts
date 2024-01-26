@@ -20,7 +20,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         datas.ride2 = false
         console.warn("a")
         system.run(() => {
-            target.triggerEvent(`right_front_door_open`)
+            target.triggerEvent("right_front_door_close")
+            target.triggerEvent(`car_stop`)
         })
 
         saveData(target.id, datas);
@@ -157,7 +158,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             if (res.canceled) return;
                             if (res.selection === 0) {
                                 datas.option = true
-                                saveData(target.id, datas)
+                                entity.triggerEvent("speed0")
+                                saveData(entity.id, datas)
                             }
                         })
                 })
