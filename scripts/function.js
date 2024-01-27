@@ -92,6 +92,7 @@ export function loop(entity) {
         data.ride2 = false;
         data.option = false;
         data.setPlid("");
+        entity.triggerEvent(`back_mirror_close`);
         entity.triggerEvent(`car_stop`);
         saveData(entity.id, data);
     }

@@ -153,6 +153,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         if (res.selection === 0) {
                             datas.option = true;
                             entity.triggerEvent("speed0");
+                            entity.triggerEvent("back_mirror_open");
                             saveData(entity.id, datas);
                         }
                     });
