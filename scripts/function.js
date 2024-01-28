@@ -93,10 +93,19 @@ export function openui2(player, entityData) {
                     world.sendMessage(JSON.stringify(data));
                 }
                 else if (res.selection == 0) {
+                    const data2 = {
+                        headLight: false, // 헤드라이트
+                        left_signal: false, // 좌 신호등
+                        right_signal: false, // 우 신호등
+                        window: true, //창문
+                        speed: 30,
+                        siren: false
+                    };
                     data.option = false;
                     data.ride2 = false;
-                    entity.triggerEvent(`right_front_door_close`);
+                    entity.triggerEvent(`back_mirror_close2`);
                     saveData(entity.id, data);
+                    saveData("car:" + entity.id, data2);
                 }
             });
         }
@@ -116,10 +125,19 @@ export function openui2(player, entityData) {
                     world.sendMessage(JSON.stringify(data));
                 }
                 else if (res.selection == 0) {
+                    const data2 = {
+                        headLight: false, // 헤드라이트
+                        left_signal: false, // 좌 신호등
+                        right_signal: false, // 우 신호등
+                        window: true, //창문
+                        speed: 30,
+                        siren: false
+                    };
                     data.option = false;
                     data.ride2 = false;
-                    entity.triggerEvent(`right_front_door_close`);
+                    entity.triggerEvent(`back_mirror_close2`);
                     saveData(entity.id, data);
+                    saveData("car:" + entity.id, data2);
                 }
             });
         }
