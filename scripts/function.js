@@ -93,13 +93,10 @@ export function openui2(player, entityData) {
                     world.sendMessage(JSON.stringify(data));
                 }
                 else if (res.selection == 0) {
-                    data.setTrOpen(false);
-                    saveData(data.entid, data);
-                    data.setPlid(player.id);
-                    data.ride2 = true;
-                    world.sendMessage(JSON.stringify(data));
-                    saveData(data.entid, data);
-                    entity.triggerEvent("right_front_door_open");
+                    data.option = false;
+                    data.ride2 = false;
+                    entity.triggerEvent(`right_front_door_close`);
+                    saveData(entity.id, data);
                 }
             });
         }
@@ -119,12 +116,10 @@ export function openui2(player, entityData) {
                     world.sendMessage(JSON.stringify(data));
                 }
                 else if (res.selection == 0) {
-                    if (res.selection === 0) {
-                        data.option = false;
-                        data.ride2 = false;
-                        entity.triggerEvent(`right_front_door_close`);
-                        saveData(entity.id, data);
-                    }
+                    data.option = false;
+                    data.ride2 = false;
+                    entity.triggerEvent(`right_front_door_close`);
+                    saveData(entity.id, data);
                 }
             });
         }

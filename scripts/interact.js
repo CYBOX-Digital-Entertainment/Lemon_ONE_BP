@@ -181,16 +181,36 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                         }
                                     }
                                     else {
-                                        entity.triggerEvent("back_mirror_close2");
+                                        const data2 = {
+                                            headLight: false, // 헤드라이트
+                                            left_signal: false, // 좌 신호등
+                                            right_signal: false, // 우 신호등
+                                            window: true, //창문
+                                            speed: 30,
+                                            siren: false
+                                        };
                                         datas.option = false;
+                                        datas.ride2 = false;
+                                        entity.triggerEvent(`back_mirror_close`);
                                         saveData(entity.id, datas);
+                                        saveData("car:" + entity.id, data2);
                                         break;
                                     }
                                 }
                                 case 7: {
+                                    const data2 = {
+                                        headLight: false, // 헤드라이트
+                                        left_signal: false, // 좌 신호등
+                                        right_signal: false, // 우 신호등
+                                        window: true, //창문
+                                        speed: 30,
+                                        siren: false
+                                    };
                                     datas.option = false;
-                                    entity.triggerEvent("back_mirror_close2");
+                                    datas.ride2 = false;
+                                    entity.triggerEvent(`back_mirror_close`);
                                     saveData(entity.id, datas);
+                                    saveData("car:" + entity.id, data2);
                                     break;
                                 }
                             }

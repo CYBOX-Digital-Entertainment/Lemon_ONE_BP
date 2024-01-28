@@ -95,13 +95,10 @@ export function openui2(player: Player, entityData: EntityData) {
                         entity.triggerEvent("bonnet_close");
                         world.sendMessage(JSON.stringify(data))
                     } else if (res.selection == 0) {
-                        data.setTrOpen(false)
-                        saveData(data.entid, data)
-                        data.setPlid(player.id)
-                        data.ride2 = true
-                        world.sendMessage(JSON.stringify(data))
-                        saveData(data.entid, data)
-                        entity.triggerEvent("right_front_door_open")
+                        data.option = false
+                        data.ride2 = false
+                        entity.triggerEvent(`right_front_door_close`)
+                        saveData(entity.id, data)
                     }
                 })
         } else if (!data.tropen) {
@@ -118,13 +115,10 @@ export function openui2(player: Player, entityData: EntityData) {
                         entity.triggerEvent("bonnet_open");
                         world.sendMessage(JSON.stringify(data))
                     } else if (res.selection == 0) {
-                        
-                        if (res.selection === 0) {
-                            data.option = false
-                            data.ride2 = false
-                            entity.triggerEvent(`right_front_door_close`)
-                            saveData(entity.id, data)
-                        }
+                        data.option = false
+                        data.ride2 = false
+                        entity.triggerEvent(`right_front_door_close`)
+                        saveData(entity.id, data)
                     }
                 })
         }
@@ -163,16 +157,16 @@ export function loop(entity: Entity) {
     if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         component?.ejectRiders()
         data.setRide(false)
-        if(data.option){
+        if (data.option) {
             entity.triggerEvent(`back_mirror_close`)
-        }else{
+        } else {
             entity.triggerEvent(`right_front_door_close`)
         }
         data.ride2 = false
         data.option = false
         data.setPlid("")
         entity.triggerEvent(`car_stop`)
-        saveData("car:"+entity.id, data2)
+        saveData("car:" + entity.id, data2)
         saveData(entity.id, data)
     }
 }

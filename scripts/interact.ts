@@ -1,4 +1,4 @@
-import { EntityRideableComponent, EntityMovementComponent, system, world, Entity } from "@minecraft/server";
+import { EntityRideableComponent, system, world } from "@minecraft/server";
 import { readData, saveData } from "./db"
 import { openui, openui2 } from "./function"
 import { EntityData } from "./class"
@@ -190,18 +190,37 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                                 world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data))
                                             }
                                         } else {
-                                            entity.triggerEvent("back_mirror_close2")
-
-                                            datas.option = false;
+                                            const data2 = {
+                                                headLight: false, // 헤드라이트
+                                                left_signal: false, // 좌 신호등
+                                                right_signal: false,// 우 신호등
+                                                window: true, //창문
+                                                speed: 30,
+                                                siren: false
+                                            }
+                                            datas.option = false
+                                            datas.ride2 = false
+                                            entity.triggerEvent(`back_mirror_close`)
                                             saveData(entity.id, datas)
+                                            saveData("car:" + entity.id, data2)
                                             break;
                                         }
                                     }
 
                                     case 7: {
-                                        datas.option = false;
-                                        entity.triggerEvent("back_mirror_close2")
+                                        const data2 = {
+                                            headLight: false, // 헤드라이트
+                                            left_signal: false, // 좌 신호등
+                                            right_signal: false,// 우 신호등
+                                            window: true, //창문
+                                            speed: 30,
+                                            siren: false
+                                        }
+                                        datas.option = false
+                                        datas.ride2 = false
+                                        entity.triggerEvent(`back_mirror_close`)
                                         saveData(entity.id, datas)
+                                        saveData("car:"+entity.id, data2)
                                         break;
                                     }
                                 }
