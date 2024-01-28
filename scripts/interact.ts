@@ -1,6 +1,6 @@
 import { EntityRideableComponent, EntityMovementComponent, system, world, Entity } from "@minecraft/server";
 import { readData, saveData } from "./db"
-import { openui, playAni } from "./function"
+import { openui, openui2 } from "./function"
 import { EntityData } from "./class"
 import { ActionFormData } from "@minecraft/server-ui";
 
@@ -27,13 +27,30 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         saveData(target.id, datas);
         return;
     }
+    if (itemStack?.typeId == "key:dw_tosca_key" && datas.ride2 && !datas.ride) {
+        e.cancel = true
+        openui2(player,datas)
+        return;
+    }
     if (itemStack?.typeId == "key:dw_tosca_key" && itemStack?.getLore()[0].slice(14) == target.id) {
         e.cancel = true
         if (rid.getRiders()[0]?.id === player.id || rid.getRiders()[0]?.id === datas.plid || datas.ride) {
             let entity = target;
             if (datas.option) {
+                if (!world?.getDynamicProperty(`car:${entity.id}`)) {
+                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify({
+                        headLight: false, // 헤드라이트
+                        left_signal: false, // 좌 신호등
+                        right_signal: false,// 우 신호등
+                        window: true, //창문
+                        speed: 30,
+                        siren: false
+                    }));
+                }
                 const speed = [30, 70, 100, 150, 220];
                 const data = JSON.parse(world.getDynamicProperty(`car:${entity.id}`) as string);
+
+                
 
                 system.run(() => {
                     function optionUi() {
@@ -212,35 +229,5 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         }
     } else if (itemStack?.getLore()[0].slice(14) != target.id) {
         e.cancel = true
-    }
-})
-
-system.runInterval(() => {
-    for(const target of world.getDimension("overworld").getEntities({type: "cybox:dw_tosca"}) as Entity[]){
-        
-        if (!world?.getDynamicProperty(`car:${target.id}`)) {
-            world.setDynamicProperty(`car:${target.id}`, JSON.stringify({
-                headLight: false, // 헤드라이트
-                left_signal: false, // 좌 신호등
-                right_signal: false,// 우 신호등
-                window: true, //창문
-                speed: 30,
-                siren: false
-            }));
-        }
-
-
-        const datas = readData(target.id) as EntityData;
-
-        let movement = target.getComponent(`minecraft:movement`) as EntityMovementComponent;
-
-        if(!datas?.option){
-            movement.setCurrentValue(0)
-        }else{
-            const data = JSON.parse(world.getDynamicProperty(`car:${target.id}`) as string ?? `{"speed":30}`);
-            const speed = [30, 70, 100, 150, 220];
-        
-            target.triggerEvent(`speed${speed.indexOf(data.speed)}`); 
-        }
     }
 })

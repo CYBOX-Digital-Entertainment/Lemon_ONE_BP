@@ -1,6 +1,6 @@
 import { system, world } from "@minecraft/server";
 import { readData, saveData } from "./db";
-import { openui } from "./function";
+import { openui, openui2 } from "./function";
 import { ActionFormData } from "@minecraft/server-ui";
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     const { itemStack, player, target } = e;
@@ -25,11 +25,26 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         saveData(target.id, datas);
         return;
     }
+    if (itemStack?.typeId == "key:dw_tosca_key" && datas.ride2 && !datas.ride) {
+        e.cancel = true;
+        openui2(player, datas);
+        return;
+    }
     if (itemStack?.typeId == "key:dw_tosca_key" && itemStack?.getLore()[0].slice(14) == target.id) {
         e.cancel = true;
         if (rid.getRiders()[0]?.id === player.id || rid.getRiders()[0]?.id === datas.plid || datas.ride) {
             let entity = target;
             if (datas.option) {
+                if (!world?.getDynamicProperty(`car:${entity.id}`)) {
+                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify({
+                        headLight: false, // 헤드라이트
+                        left_signal: false, // 좌 신호등
+                        right_signal: false, // 우 신호등
+                        window: true, //창문
+                        speed: 30,
+                        siren: false
+                    }));
+                }
                 const speed = [30, 70, 100, 150, 220];
                 const data = JSON.parse(world.getDynamicProperty(`car:${entity.id}`));
                 system.run(() => {
@@ -37,7 +52,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         const isPolice = entity.hasTag("police");
                         const ui = new ActionFormData()
                             .title('차')
-                            .button(`§r헤드라이트 끄기\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`)
+                            .button(`§헤드라이트 끄기\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`)
                             .button(`§r좌측 신호등\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`)
                             .button(`§r우측 신호등\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/right_signal_${data.right_signal ? 'off' : 'on'}`)
                             .button(`§r창문\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`, `textures/items/roll_${data.window ? 'down' : 'up'}`)
@@ -207,29 +222,5 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     }
     else if (itemStack?.getLore()[0].slice(14) != target.id) {
         e.cancel = true;
-    }
-});
-system.runInterval(() => {
-    for (const target of world.getDimension("overworld").getEntities({ type: "cybox:dw_tosca" })) {
-        if (!world?.getDynamicProperty(`car:${target.id}`)) {
-            world.setDynamicProperty(`car:${target.id}`, JSON.stringify({
-                headLight: false, // 헤드라이트
-                left_signal: false, // 좌 신호등
-                right_signal: false, // 우 신호등
-                window: true, //창문
-                speed: 30,
-                siren: false
-            }));
-        }
-        const datas = readData(target.id);
-        let movement = target.getComponent(`minecraft:movement`);
-        if (!datas?.option) {
-            movement.setCurrentValue(0);
-        }
-        else {
-            const data = JSON.parse(world.getDynamicProperty(`car:${target.id}`) ?? `{"speed":30}`);
-            const speed = [30, 70, 100, 150, 220];
-            target.triggerEvent(`speed${speed.indexOf(data.speed)}`);
-        }
     }
 });
