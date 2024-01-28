@@ -28,8 +28,8 @@ export function openui(player: Player, entityData: EntityData) {
     system.run(() => {
         if (data.tropen) {
             new ActionFormData()
-                .button(`운전자 탑승`)
-                .button(`트렁크 닫기`)
+                .button(`차문 열기`)
+                .button(`트렁크 닫기`, 'textures/items/bonnet_close')
                 .show(player)
                 .then(result => {
                     if (result.selection == 1) {
@@ -39,6 +39,8 @@ export function openui(player: Player, entityData: EntityData) {
                         entity.triggerEvent("bonnet_close");
                         world.sendMessage(JSON.stringify(data))
                     } else if (result.selection == 0) {
+                        data.setTrOpen(false)
+                        saveData(data.entid, data) // 트렁크 닫기
                         data.setPlid(player.id)
                         data.ride2 = true
                         world.sendMessage(JSON.stringify(data))
@@ -48,8 +50,8 @@ export function openui(player: Player, entityData: EntityData) {
                 })
         } else if (!data.tropen) {
             new ActionFormData()
-                .button(`운전자 탑승`)
-                .button(`트렁크 열기`)
+                .button(`차문 열기`)
+                .button(`트렁크 열기`, 'textures/items/bonnet_open')
                 .show(player)
                 .then(result => {
                     if (result.selection == 1) {
@@ -95,10 +97,14 @@ export function loop(entity: Entity) {
     if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         component?.ejectRiders()
         data.setRide(false)
+        if(data.option){
+            entity.triggerEvent(`back_mirror_close`)
+        }else{
+            entity.triggerEvent(`right_front_door_close`)
+        }
         data.ride2 = false
         data.option = false
         data.setPlid("")
-        entity.triggerEvent(`back_mirror_close`)
         entity.triggerEvent(`car_stop`)
         saveData(entity.id, data)
     }
