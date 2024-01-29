@@ -69,12 +69,12 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         switch (response.selection) {
                             case 0: {
                                 if (data.headLight === true) {
-                                    entity.triggerEvent("light_off");
+                                    entity.triggerEvent("light_on");
                                     data.headLight = false;
                                     world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
                                 }
                                 else {
-                                    entity.triggerEvent("light_on");
+                                    entity.triggerEvent("light_off");
                                     data.headLight = true;
                                     data.left_signal = false;
                                     data.right_signal = false;
