@@ -106,6 +106,7 @@ export function openui2(player: Player, entityData: EntityData) {
                         data.option = false
                         data.ride2 = false
                         entity.triggerEvent(`back_mirror_close2`)
+                        entity.triggerEvent(`car_stop`)
                         saveData(entity.id, data)
                         saveData("car:" + entity.id, data2)
                     }
@@ -135,6 +136,7 @@ export function openui2(player: Player, entityData: EntityData) {
                         data.option = false
                         data.ride2 = false
                         entity.triggerEvent(`back_mirror_close2`)
+                        entity.triggerEvent(`car_stop`)
                         saveData(entity.id, data)
                         saveData("car:" + entity.id, data2)
                     }

@@ -192,6 +192,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                     datas.option = false;
                                     datas.ride2 = false;
                                     entity.triggerEvent(`back_mirror_close2`);
+                                    entity.triggerEvent(`car_stop`);
                                     saveData(entity.id, datas);
                                     saveData("car:" + entity.id, data2);
                                     break;
@@ -208,7 +209,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 };
                                 datas.option = false;
                                 datas.ride2 = false;
-                                entity.triggerEvent(`back_mirror_close`);
+                                entity.triggerEvent(`back_mirror_close2`);
+                                entity.triggerEvent(`car_stop`);
                                 saveData(entity.id, datas);
                                 saveData("car:" + entity.id, data2);
                                 break;
@@ -230,6 +232,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     if (res.selection === 0) {
                         datas.option = true;
                         entity.triggerEvent("back_mirror_open");
+                        entity.triggerEvent(`speed0`);
                         saveData(entity.id, datas);
                     }
                 });
