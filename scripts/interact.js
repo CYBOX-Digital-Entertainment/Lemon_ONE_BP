@@ -54,14 +54,14 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     const isPolice = target.hasTag("police");
                     const ui = new ActionFormData()
                         .title('차')
+                        .button(`다른 플레이어 탑승 ${data.enableFriend ? '차단' : '허용'}`)
                         .button(`§r헤드라이트 끄기\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`)
                         .button(`§r좌측 신호등\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`)
                         .button(`§r우측 신호등\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/right_signal_${data.right_signal ? 'off' : 'on'}`)
                         .button(`§r창문\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`, `textures/items/roll_${data.window ? 'down' : 'up'}`)
                         .button(`§r속도 증가\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 4 ? '4' : speed.indexOf(data.speed) + 1}`)
                         .button(`§r속도 감소\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 0 ? '0' : speed.indexOf(data.speed) - 1}`)
-                        .button(`${isPolice ? `§r사이렌\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '시동 끄기'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`)
-                        .button(`다른 플레이어 탑승 ${data.enableFriend ? '차단' : '허용'}`);
+                        .button(`${isPolice ? `§r사이렌\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '시동 끄기'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`);
                     if (isPolice) {
                         ui.button('시동 끄기', 'textures/items/car_off');
                     }
@@ -71,6 +71,14 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         }
                         switch (response.selection) {
                             case 0: {
+                                target.triggerEvent(data.enableFriend ? 'door_close' : 'door_open');
+                                data.enableFriend = !data.enableFriend;
+                                entityData.enableFriend = data.enableFriend;
+                                world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
+                                saveData(target.id, entityData);
+                                break;
+                            }
+                            case 1: {
                                 if (data.headLight === true) {
                                     target.triggerEvent("light_on");
                                     data.headLight = false;
@@ -88,7 +96,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 optionUi();
                                 break;
                             }
-                            case 1: {
+                            case 2: {
                                 if (data.left_signal === true) {
                                     target.triggerEvent("left_signal_off");
                                     data.left_signal = false;
@@ -106,7 +114,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 optionUi();
                                 break;
                             }
-                            case 2: {
+                            case 3: {
                                 if (data.right_signal === true) {
                                     target.triggerEvent("right_signal_off");
                                     data.right_signal = false;
@@ -124,7 +132,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 optionUi();
                                 break;
                             }
-                            case 3: {
+                            case 4: {
                                 if (data.window === true) {
                                     target.triggerEvent("roll_down");
                                     data.headLight = false;
@@ -142,7 +150,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 optionUi();
                                 break;
                             }
-                            case 4: {
+                            case 5: {
                                 if (speed.indexOf(data.speed) === 4) {
                                     player.sendMessage(`§4최대 속력입니다.`);
                                 }
@@ -154,7 +162,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 optionUi();
                                 break;
                             }
-                            case 5: {
+                            case 6: {
                                 if (speed.indexOf(data.speed) === 0) {
                                     player.sendMessage(`§4최소 속력입니다.`);
                                 }
@@ -166,7 +174,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 optionUi();
                                 break;
                             }
-                            case 6: {
+                            case 7: {
                                 if (isPolice) {
                                     if (data.siren === true) {
                                         target.triggerEvent("siren_off");
@@ -199,14 +207,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                     saveData(target.id, entityData);
                                     saveData("car:" + target.id, data2);
                                 }
-                                break;
-                            }
-                            case 7: {
-                                target.triggerEvent(data.enableFriend ? 'door_close' : 'door_open');
-                                data.enableFriend = !data.enableFriend;
-                                entityData.enableFriend = data.enableFriend;
-                                world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
-                                saveData(target.id, entityData);
                                 break;
                             }
                             case 8: {
