@@ -4,6 +4,18 @@ import { readData, saveData } from "./db";
 import { EntityData } from "./class";
 import { loop } from "./function";
 let waitingItemStack;
+const initialItems = [
+    "cybox:tosca_paint_ddg",
+    "cybox:tosca_paint_gb",
+    "cybox:tosca_paint_gw",
+    "cybox:tosca_paint_kr",
+    "cybox:tosca_paint_og",
+    "cybox:tosca_paint_pb",
+    "cybox:tosca_paint_ps",
+    "cybox:tosca_paint_sdg",
+    "cybox:tosca_paint_wp",
+    "cybox:tosca_police_kit",
+];
 world.afterEvents.itemUseOn.subscribe(({ source, itemStack }) => {
     if (itemStack.typeId === "cybox:dw_tosca_spawn_egg") {
         source.getComponent(EntityInventoryComponent.componentId)
@@ -25,6 +37,8 @@ world.afterEvents.entityDie.subscribe(res => {
 world.afterEvents.entitySpawn.subscribe(({ entity }) => {
     if (readData(entity.id) === undefined && entity.typeId == "cybox:dw_tosca") {
         const tr = entity.dimension.spawnEntity(`addon:tr`, entity.location);
+        const truncInvComponent = tr.getComponent(EntityInventoryComponent.componentId);
+        initialItems.forEach(initialItem => truncInvComponent?.container?.addItem(new ItemStack(initialItem, 3)));
         const data = new EntityData();
         data.setTrId(tr.id);
         data.setEntId(entity.id);

@@ -183,6 +183,7 @@ export function loop(entity) {
         }
         data.ride2 = false;
         data.option = false;
+        data.enableFriend = false;
         data.setPlid("");
         entity.triggerEvent(`car_stop`);
         saveData("car:" + entity.id, data2);

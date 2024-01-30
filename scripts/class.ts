@@ -8,36 +8,45 @@ export class EntityData {
         this.tropen = data?.tropen ?? false;
         this.ride = data?.ride ?? false;
         this.ride2 = data?.ride2 ?? false
+        this.enableFriend = data?.enableFriend ?? false;
         this.option = data?.option ?? false
     }
-    option: boolean
-    plid: string
-    tropen: boolean
-    entid: string
-    trid: string
-    ride: boolean
-    ride2: boolean
+
+    entid: string;
+    plid: string;
+    trid: string;
+    tropen: boolean;
+    ride: boolean;
+    ride2: boolean;
+    enableFriend: boolean;
+    option: boolean;
+
     setPlid(id: string): EntityData {
-        this.plid = id
-        return this
+        this.plid = id;
+        return this;
     }
+
     setTrOpen(open: boolean): EntityData {
-        this.tropen = open
-        return this
+        this.tropen = open;
+        return this;
     }
+
     setEntId(id: string): EntityData {
-        this.entid = id
-        return this
+        this.entid = id;
+        return this;
     }
+
     setTrId(id: string): EntityData {
-        this.trid = id
-        return this
+        this.trid = id;
+        return this;
     }
+
     setRide(ride: boolean): EntityData {
-        this.ride = ride
-        return this
+        this.ride = ride;
+        return this;
     }
-    entity():Entity | undefined {
+
+    entity(): Entity | undefined {
         return world.getEntity(this.entid)
     }
 }

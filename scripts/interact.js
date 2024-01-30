@@ -8,35 +8,37 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         return;
     }
     const rid = target.getComponent(`minecraft:rideable`);
-    const datas = readData(target.id);
-    if (itemStack?.typeId != "key:dw_tosca_key" && ((!datas.ride2 && player.id !== datas.plid))) {
+    const entityData = readData(target.id);
+    if (itemStack?.typeId != "key:dw_tosca_key" && !entityData.ride2 && player.id !== entityData.plid) {
+        if (rid.getRiders().length && entityData.enableFriend) {
+            return;
+        }
         e.cancel = true;
         console.warn(`cancel`);
         return;
     }
-    else if (itemStack?.typeId != "key:dw_tosca_key" && (!datas.ride && datas.ride2 && player.id === datas.plid)) {
-        datas.ride = true;
-        datas.ride2 = false;
+    else if (itemStack?.typeId != "key:dw_tosca_key" && (!entityData.ride && entityData.ride2 && player.id === entityData.plid)) {
+        entityData.ride = true;
+        entityData.ride2 = false;
         console.warn("a");
         system.run(() => {
             target.triggerEvent("right_front_door_close");
             target.triggerEvent(`car_stop`);
         });
-        saveData(target.id, datas);
+        saveData(target.id, entityData);
         return;
     }
-    if (itemStack?.typeId == "key:dw_tosca_key" && datas.ride2 && !datas.ride && datas.plid === player.id) {
+    if (itemStack?.typeId == "key:dw_tosca_key" && entityData.ride2 && !entityData.ride && entityData.plid === player.id) {
         e.cancel = true;
-        openui2(player, datas);
+        openui2(player, entityData);
         return;
     }
     //if (itemStack?.typeId == "key:dw_tosca_key" && itemStack?.getLore()[0].slice(14) == target.id) {
-    if (rid.getRiders()[0]?.id === player.id && rid.getRiders()[0]?.id === datas.plid && datas.ride) {
-        let entity = target;
+    if (rid.getRiders()[0]?.id === player.id && rid.getRiders()[0]?.id === entityData.plid && entityData.ride) {
         e.cancel = true;
-        if (datas.option) {
-            if (!world?.getDynamicProperty(`car:${entity.id}`)) {
-                world.setDynamicProperty(`car:${entity.id}`, JSON.stringify({
+        if (entityData.option) {
+            if (!world?.getDynamicProperty(`car:${target.id}`)) {
+                world.setDynamicProperty(`car:${target.id}`, JSON.stringify({
                     headLight: false, // 헤드라이트
                     left_signal: false, // 좌 신호등
                     right_signal: false, // 우 신호등
@@ -46,10 +48,10 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 }));
             }
             const speed = [30, 70, 100, 150, 220];
-            const data = JSON.parse(world.getDynamicProperty(`car:${entity.id}`));
+            const data = JSON.parse(world.getDynamicProperty(`car:${target.id}`));
             system.run(() => {
                 function optionUi() {
-                    const isPolice = entity.hasTag("police");
+                    const isPolice = target.hasTag("police");
                     const ui = new ActionFormData()
                         .title('차')
                         .button(`§r헤드라이트 끄기\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`)
@@ -58,7 +60,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         .button(`§r창문\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`, `textures/items/roll_${data.window ? 'down' : 'up'}`)
                         .button(`§r속도 증가\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 4 ? '4' : speed.indexOf(data.speed) + 1}`)
                         .button(`§r속도 감소\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 0 ? '0' : speed.indexOf(data.speed) - 1}`)
-                        .button(`${isPolice ? `§r사이렌\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '시동 끄기'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`);
+                        .button(`${isPolice ? `§r사이렌\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '시동 끄기'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`)
+                        .button(`다른 플레이어 탑승 ${data.enableFriend ? '차단' : '허용'}`);
                     if (isPolice) {
                         ui.button('시동 끄기', 'textures/items/car_off');
                     }
@@ -69,72 +72,72 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         switch (response.selection) {
                             case 0: {
                                 if (data.headLight === true) {
-                                    entity.triggerEvent("light_on");
+                                    target.triggerEvent("light_on");
                                     data.headLight = false;
-                                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                    world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 }
                                 else {
-                                    entity.triggerEvent("light_off");
+                                    target.triggerEvent("light_off");
                                     data.headLight = true;
                                     data.left_signal = false;
                                     data.right_signal = false;
                                     data.window = true;
                                     data.siren = false;
-                                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                    world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 }
                                 optionUi();
                                 break;
                             }
                             case 1: {
                                 if (data.left_signal === true) {
-                                    entity.triggerEvent("left_signal_off");
+                                    target.triggerEvent("left_signal_off");
                                     data.left_signal = false;
-                                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                    world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 }
                                 else {
-                                    entity.triggerEvent("left_signal_on");
+                                    target.triggerEvent("left_signal_on");
                                     data.headLight = false;
                                     data.left_signal = true;
                                     data.right_signal = false;
                                     data.window = true;
                                     data.siren = false;
-                                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                    world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 }
                                 optionUi();
                                 break;
                             }
                             case 2: {
                                 if (data.right_signal === true) {
-                                    entity.triggerEvent("right_signal_off");
+                                    target.triggerEvent("right_signal_off");
                                     data.right_signal = false;
-                                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                    world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 }
                                 else {
-                                    entity.triggerEvent("right_signal_on");
+                                    target.triggerEvent("right_signal_on");
                                     data.headLight = false;
                                     data.left_signal = false;
                                     data.right_signal = true;
                                     data.window = true;
                                     data.siren = false;
-                                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                    world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 }
                                 optionUi();
                                 break;
                             }
                             case 3: {
                                 if (data.window === true) {
-                                    entity.triggerEvent("roll_down");
+                                    target.triggerEvent("roll_down");
                                     data.headLight = false;
                                     data.left_signal = false;
                                     data.right_signal = false;
                                     data.window = false;
                                     data.siren = false;
-                                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                    world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 }
                                 else {
-                                    entity.triggerEvent("roll_up");
+                                    target.triggerEvent("roll_up");
                                     data.window = true;
-                                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                    world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 }
                                 optionUi();
                                 break;
@@ -144,9 +147,9 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                     player.sendMessage(`§4최대 속력입니다.`);
                                 }
                                 else {
-                                    entity.triggerEvent(`speed${speed.indexOf(data.speed) + 1}`);
+                                    target.triggerEvent(`speed${speed.indexOf(data.speed) + 1}`);
                                     data.speed = speed[speed.indexOf(data.speed) + 1];
-                                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                    world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 }
                                 optionUi();
                                 break;
@@ -156,9 +159,9 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                     player.sendMessage(`§4최소 속력입니다.`);
                                 }
                                 else {
-                                    entity.triggerEvent(`speed${speed.indexOf(data.speed) - 1}`);
+                                    target.triggerEvent(`speed${speed.indexOf(data.speed) - 1}`);
                                     data.speed = speed[speed.indexOf(data.speed) - 1];
-                                    world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                    world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 }
                                 optionUi();
                                 break;
@@ -166,18 +169,18 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             case 6: {
                                 if (isPolice) {
                                     if (data.siren === true) {
-                                        entity.triggerEvent("siren_off");
+                                        target.triggerEvent("siren_off");
                                         data.siren = false;
-                                        world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                        world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                     }
                                     else {
-                                        entity.triggerEvent("siren_on");
+                                        target.triggerEvent("siren_on");
                                         data.headLight = false;
                                         data.left_signal = false;
                                         data.right_signal = false;
                                         data.window = true;
                                         data.siren = true;
-                                        world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data));
+                                        world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                     }
                                 }
                                 else {
@@ -189,16 +192,24 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                         speed: 30,
                                         siren: false
                                     };
-                                    datas.option = false;
-                                    datas.ride2 = false;
-                                    entity.triggerEvent(`back_mirror_close2`);
-                                    entity.triggerEvent(`car_stop`);
-                                    saveData(entity.id, datas);
-                                    saveData("car:" + entity.id, data2);
-                                    break;
+                                    entityData.option = false;
+                                    entityData.ride2 = false;
+                                    target.triggerEvent(`back_mirror_close2`);
+                                    target.triggerEvent(`car_stop`);
+                                    saveData(target.id, entityData);
+                                    saveData("car:" + target.id, data2);
                                 }
+                                break;
                             }
                             case 7: {
+                                if (!entityData.enableFriend) {
+                                    target.triggerEvent('door_open');
+                                }
+                                entityData.enableFriend = !entityData.enableFriend;
+                                saveData(target.id, entityData);
+                                break;
+                            }
+                            case 8: {
                                 const data2 = {
                                     headLight: false, // 헤드라이트
                                     left_signal: false, // 좌 신호등
@@ -207,11 +218,11 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                     speed: 30,
                                     siren: false
                                 };
-                                datas.option = false;
-                                datas.ride2 = false;
-                                entity.triggerEvent(`back_mirror_close`);
-                                saveData(entity.id, datas);
-                                saveData("car:" + entity.id, data2);
+                                entityData.option = false;
+                                entityData.ride2 = false;
+                                target.triggerEvent(`back_mirror_close`);
+                                saveData(target.id, entityData);
+                                saveData("car:" + target.id, data2);
                                 break;
                             }
                         }
@@ -225,14 +236,26 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 new ActionFormData()
                     .title(`차`)
                     .button(`시동 켜기`, 'textures/items/car_on')
+                    .button(`다른 플레이어 탑승 ${entityData.enableFriend ? '차단' : '허용'}`)
                     .show(player).then(res => {
                     if (res.canceled)
                         return;
-                    if (res.selection === 0) {
-                        datas.option = true;
-                        entity.triggerEvent("back_mirror_open");
-                        entity.triggerEvent(`speed0`);
-                        saveData(entity.id, datas);
+                    switch (res.selection) {
+                        case 0: {
+                            entityData.option = true;
+                            target.triggerEvent("back_mirror_open");
+                            target.triggerEvent(`speed0`);
+                            saveData(target.id, entityData);
+                            break;
+                        }
+                        case 1: {
+                            if (!entityData.enableFriend) {
+                                target.triggerEvent('door_open');
+                            }
+                            entityData.enableFriend = !entityData.enableFriend;
+                            saveData(target.id, entityData);
+                            break;
+                        }
                     }
                 });
             });
@@ -240,7 +263,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     }
     else if (itemStack?.typeId == "key:dw_tosca_key" && itemStack?.getLore()[0].slice(14) == target.id) {
         e.cancel = true;
-        openui(player, datas);
+        openui(player, entityData);
     }
     if (itemStack?.getLore()[0].slice(14) != target.id) {
         e.cancel = true;
