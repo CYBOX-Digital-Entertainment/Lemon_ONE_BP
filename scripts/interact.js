@@ -1,4 +1,4 @@
-import { system, world } from "@minecraft/server";
+import { EntityMovementComponent, system, world } from "@minecraft/server";
 import { readData, saveData } from "./db";
 import { openui, openui2 } from "./function";
 import { ActionFormData } from "@minecraft/server-ui";
@@ -203,7 +203,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                     entityData.option = false;
                                     entityData.ride2 = false;
                                     target.triggerEvent(`back_mirror_close2`);
-                                    target.triggerEvent(`car_stop`);
+                                    target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0);
                                     saveData(target.id, entityData);
                                     saveData("car:" + target.id, data2);
                                 }
@@ -221,6 +221,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 entityData.option = false;
                                 entityData.ride2 = false;
                                 target.triggerEvent(`back_mirror_close`);
+                                target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0);
                                 saveData(target.id, entityData);
                                 saveData("car:" + target.id, data2);
                                 break;

@@ -1,4 +1,4 @@
-import { Entity, EntityInventoryComponent, EntityRideableComponent, EntityType, ItemStack, Player, system, world } from "@minecraft/server";
+import { Entity, EntityInventoryComponent, EntityMovementComponent, EntityRideableComponent, EntityType, ItemStack, Player, system, world } from "@minecraft/server";
 import { EntityData } from "./class"
 import { readData, saveData } from "./db"
 import { ActionFormData } from "@minecraft/server-ui";
@@ -187,7 +187,7 @@ export function loop(entity: Entity) {
         data.option = false
         data.enableFriend = false;
         data.setPlid("")
-        entity.triggerEvent(`car_stop`)
+        entity.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0)
         saveData("car:" + entity.id, data2)
         saveData(entity.id, data)
     }
