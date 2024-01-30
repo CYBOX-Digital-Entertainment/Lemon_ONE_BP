@@ -137,6 +137,7 @@ export function openui2(player: Player, entityData: EntityData) {
                         data.ride2 = false
                         entity.triggerEvent(`back_mirror_close2`)
                         entity.triggerEvent(`car_stop`)
+                        entity.triggerEvent(`right_front_door_close`)
                         saveData(entity.id, data)
                         saveData("car:" + entity.id, data2)
                     }

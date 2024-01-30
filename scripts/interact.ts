@@ -58,13 +58,13 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     const isPolice = entity.hasTag("police");
                     const ui = new ActionFormData()
                         .title('차')
-                        .button(`§헤드라이트 끄기\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`)
+                        .button(`§r헤드라이트 끄기\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`)
                         .button(`§r좌측 신호등\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`)
                         .button(`§r우측 신호등\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/right_signal_${data.right_signal ? 'off' : 'on'}`)
                         .button(`§r창문\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`, `textures/items/roll_${data.window ? 'down' : 'up'}`)
                         .button(`§r속도 증가\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 4 ? '4' : speed.indexOf(data.speed) + 1}`)
                         .button(`§r속도 감소\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 0 ? '0' : speed.indexOf(data.speed) - 1}`)
-                        .button(`${isPolice ? `§r사이렌\n[ ${data.siren ? '§con§r' : '§aoff§r'} ]` : '시동 끄기'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`)
+                        .button(`${isPolice ? `§r사이렌\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '시동 끄기'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`)
                     if (isPolice) { ui.button('시동 끄기', 'textures/items/car_off') }
                     ui.show(player).then(response => {
                         if (response.canceled) {
@@ -73,11 +73,11 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         switch (response.selection) {
                             case 0: {
                                 if (data.headLight === true) {
-                                    entity.triggerEvent("light_off");
+                                    entity.triggerEvent("light_on");
                                     data.headLight = false;
                                     world.setDynamicProperty(`car:${entity.id}`, JSON.stringify(data))
                                 } else {
-                                    entity.triggerEvent("light_on");
+                                    entity.triggerEvent("light_off");
                                     data.headLight = true;
                                     data.left_signal = false;
                                     data.right_signal = false;
@@ -220,8 +220,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 }
                                 datas.option = false
                                 datas.ride2 = false
-                                entity.triggerEvent(`back_mirror_close2`)
-                                entity.triggerEvent(`car_stop`)
+                                entity.triggerEvent(`back_mirror_close`)
                                 saveData(entity.id, datas)
                                 saveData("car:" + entity.id, data2)
                                 break;
