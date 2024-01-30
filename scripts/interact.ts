@@ -217,11 +217,11 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             }
 
                             case 7: {
-                                if (!entityData.enableFriend) {
-                                    target.triggerEvent('door_open')
-                                }
+                                target.triggerEvent(data.enableFriend ? 'door_close' : 'door_open');
+                                data.enableFriend = !data.enableFriend;
+                                entityData.enableFriend = data.enableFriend;
 
-                                entityData.enableFriend = !entityData.enableFriend;
+                                world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 saveData(target.id, entityData);
 
                                 break;
@@ -253,7 +253,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 new ActionFormData()
                     .title(`차`)
                     .button(`시동 켜기`, 'textures/items/car_on')
-                    .button(`다른 플레이어 탑승 ${entityData.enableFriend ? '차단' : '허용'}`)
                     .show(player).then(res => {
                         if (res.canceled) return;
 
@@ -262,17 +261,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 entityData.option = true;
                                 target.triggerEvent("back_mirror_open");
                                 target.triggerEvent(`speed0`);
-                                saveData(target.id, entityData);
-
-                                break;
-                            }
-
-                            case 1: {
-                                if (!entityData.enableFriend) {
-                                    target.triggerEvent('door_open')
-                                }
-
-                                entityData.enableFriend = !entityData.enableFriend;
                                 saveData(target.id, entityData);
 
                                 break;
