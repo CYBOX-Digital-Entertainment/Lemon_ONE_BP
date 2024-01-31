@@ -1,4 +1,4 @@
-import { EntityMovementComponent, EntityRideableComponent, ItemStack, system, world } from "@minecraft/server";
+import { EntityInventoryComponent, EntityMovementComponent, EntityRideableComponent, ItemStack, system, world } from "@minecraft/server";
 import { EntityData } from "./class";
 import { readData, saveData } from "./db";
 import { ActionFormData } from "@minecraft/server-ui";
@@ -12,13 +12,23 @@ function getCar(player) {
     }
     throw new Error("Failed to get car");
 }
+function isEmptyContainer(entity) {
+    const inventory = entity.getComponent(EntityInventoryComponent.componentId);
+    if (inventory == undefined)
+        throw new Error("Failed to get inventory");
+    if (inventory.container?.emptySlotsCount === inventory.container?.size) {
+        return true;
+    }
+    return false;
+}
 export function playAni(player, eventName) {
     getCar(player).triggerEvent(eventName);
 }
 export function openui(player, entityData) {
     const data = new EntityData(entityData);
     const entity = data.entity();
-    if (entity === undefined) {
+    const trunk = data.trunk();
+    if (entity === undefined || trunk === undefined) {
         return;
     }
     system.run(() => {
@@ -58,6 +68,9 @@ export function openui(player, entityData) {
                     player.sendMessage(`트렁크가 열렸습니다.`);
                     entity.triggerEvent("bonnet_open");
                     world.sendMessage(JSON.stringify(data));
+                    if (!isEmptyContainer(trunk)) {
+                        entity.triggerEvent(`freight`);
+                    }
                 }
                 else if (result.selection == 0) {
                     data.setPlid(player.id);
@@ -73,7 +86,8 @@ export function openui(player, entityData) {
 export function openui2(player, entityData) {
     const data = new EntityData(entityData);
     const entity = data.entity();
-    if (entity === undefined) {
+    const trunk = data.trunk();
+    if (entity === undefined || trunk === undefined) {
         return;
     }
     system.run(() => {
@@ -124,6 +138,9 @@ export function openui2(player, entityData) {
                     player.sendMessage(`트렁크가 열렸습니다.`);
                     entity.triggerEvent("bonnet_open");
                     world.sendMessage(JSON.stringify(data));
+                    if (!isEmptyContainer(trunk)) {
+                        entity.triggerEvent(`freight`);
+                    }
                 }
                 else if (res.selection == 0) {
                     const data2 = {

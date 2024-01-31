@@ -14,6 +14,15 @@ function getCar(player: Player) {
     throw new Error("Failed to get car");
 }
 
+function isEmptyContainer(entity: Entity): boolean {
+    const inventory = entity.getComponent(EntityInventoryComponent.componentId)
+    if (inventory == undefined) throw new Error("Failed to get inventory");
+    if (inventory.container?.emptySlotsCount === inventory.container?.size) {
+        return true
+    }
+    return false
+}
+
 export function playAni(player: Player, eventName: string) {
     getCar(player).triggerEvent(eventName);
 }
@@ -21,7 +30,8 @@ export function playAni(player: Player, eventName: string) {
 export function openui(player: Player, entityData: EntityData) {
     const data = new EntityData(entityData)
     const entity = data.entity()
-    if (entity === undefined) {
+    const trunk = data.trunk()
+    if (entity === undefined || trunk === undefined) {
         return
     }
 
@@ -60,6 +70,9 @@ export function openui(player: Player, entityData: EntityData) {
                         player.sendMessage(`트렁크가 열렸습니다.`)
                         entity.triggerEvent("bonnet_open");
                         world.sendMessage(JSON.stringify(data))
+                        if (!isEmptyContainer(trunk)) {
+                            entity.triggerEvent(`freight`)
+                        }
                     } else if (result.selection == 0) {
                         data.setPlid(player.id)
                         data.ride2 = true
@@ -76,7 +89,8 @@ export function openui(player: Player, entityData: EntityData) {
 export function openui2(player: Player, entityData: EntityData) {
     const data = new EntityData(entityData)
     const entity = data.entity()
-    if (entity === undefined) {
+    const trunk = data.trunk()
+    if (entity === undefined || trunk === undefined) {
         return
     }
 
@@ -124,6 +138,9 @@ export function openui2(player: Player, entityData: EntityData) {
                         player.sendMessage(`트렁크가 열렸습니다.`)
                         entity.triggerEvent("bonnet_open");
                         world.sendMessage(JSON.stringify(data))
+                        if (!isEmptyContainer(trunk)) {
+                            entity.triggerEvent(`freight`)
+                        }
                     } else if (res.selection == 0) {
                         const data2 = {
                             headLight: false, // 헤드라이트

@@ -30,6 +30,9 @@ export class EntityData {
         this.ride = ride;
         return this;
     }
+    trunk() {
+        return world.getEntity(this.trid);
+    }
     entity() {
         return world.getEntity(this.entid);
     }

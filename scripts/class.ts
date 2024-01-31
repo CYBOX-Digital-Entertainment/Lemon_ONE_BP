@@ -45,7 +45,9 @@ export class EntityData {
         this.ride = ride;
         return this;
     }
-
+    trunk(): Entity | undefined {
+        return world.getEntity(this.trid)
+    }
     entity(): Entity | undefined {
         return world.getEntity(this.entid)
     }
