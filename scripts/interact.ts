@@ -25,7 +25,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         console.warn("a")
         system.run(() => {
             target.triggerEvent("right_front_door_close")
-            target.triggerEvent(`car_stop`)
+            target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0)
         })
 
         saveData(target.id, entityData);

@@ -68,10 +68,9 @@ export function openui(player: Player, entityData: EntityData) {
                         data.setTrOpen(true)
                         saveData(data.entid, data)
                         player.sendMessage(`트렁크가 열렸습니다.`)
-                        entity.triggerEvent("bonnet_open");
                         world.sendMessage(JSON.stringify(data))
                         if (!isEmptyContainer(trunk)) {
-                            entity.triggerEvent(`freight`)
+                            entity.triggerEvent(`bonnet_open`)
                         }
                     } else if (result.selection == 0) {
                         data.setPlid(player.id)
@@ -120,7 +119,7 @@ export function openui2(player: Player, entityData: EntityData) {
                         data.option = false
                         data.ride2 = false
                         entity.triggerEvent(`back_mirror_close2`)
-                        entity.triggerEvent(`car_stop`)
+                        entity.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0)
                         saveData(entity.id, data)
                         saveData("car:" + entity.id, data2)
                     }
@@ -128,20 +127,10 @@ export function openui2(player: Player, entityData: EntityData) {
         } else if (!data.tropen) {
             new ActionFormData()
                 .button(`차문 닫기`, 'textures/items/door_off')
-                .button(`트렁크 열기`, 'textures/items/bonnet_open')
                 .show(player)
                 .then(res => {
                     if (res.canceled) return;
-                    if (res.selection == 1) {
-                        data.setTrOpen(true)
-                        saveData(data.entid, data)
-                        player.sendMessage(`트렁크가 열렸습니다.`)
-                        entity.triggerEvent("bonnet_open");
-                        world.sendMessage(JSON.stringify(data))
-                        if (!isEmptyContainer(trunk)) {
-                            entity.triggerEvent(`freight`)
-                        }
-                    } else if (res.selection == 0) {
+                    if (res.selection == 0) {
                         const data2 = {
                             headLight: false, // 헤드라이트
                             left_signal: false, // 좌 신호등
@@ -153,7 +142,7 @@ export function openui2(player: Player, entityData: EntityData) {
                         data.option = false
                         data.ride2 = false
                         entity.triggerEvent(`back_mirror_close2`)
-                        entity.triggerEvent(`car_stop`)
+                        entity.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0)
                         entity.triggerEvent(`right_front_door_close`)
                         saveData(entity.id, data)
                         saveData("car:" + entity.id, data2)
