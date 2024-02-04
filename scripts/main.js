@@ -45,6 +45,7 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         saveData(entity.id, data);
         waitingItemStack = new ItemStack("key:dw_tosca_key", 1);
         waitingItemStack.setLore([`등록된 자동차 아이디 : ${entity.id}`]);
+        truncInvComponent?.container?.setItem(13, waitingItemStack);
         world.sendMessage(JSON.stringify(data));
     }
 });

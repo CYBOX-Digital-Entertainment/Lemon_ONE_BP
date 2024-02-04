@@ -21,6 +21,18 @@ function isEmptyContainer(entity) {
     }
     return false;
 }
+export function hasKey(player, car) {
+    const inventory = player.getComponent(EntityInventoryComponent.componentId);
+    if (!inventory?.inventorySize)
+        return false;
+    for (let i = 0; i < inventory?.inventorySize; i++) {
+        const item = inventory.container?.getItem(i);
+        if (item?.typeId === "key:dw_tosca_key" && item?.getLore()[0]?.slice(14) == car.id) {
+            return true;
+        }
+    }
+    return false;
+}
 export function playAni(player, eventName) {
     getCar(player).triggerEvent(eventName);
 }
@@ -155,12 +167,13 @@ export function tpTr(data) {
     const tr = world.getEntity(data.trid);
     const ent = world.getEntity(data.entid);
     let loc = ent?.location;
-    if (loc == undefined)
+    let dir = ent?.getViewDirection();
+    if (loc == undefined || dir == undefined)
         return;
     if (!data.tropen) {
         loc.y += 100;
     }
-    tr?.runCommandAsync(`tp ${loc?.x} ${loc?.y} ${loc?.z}`);
+    tr?.runCommandAsync(`tp ${loc?.x - (dir?.x * 5)} ${loc?.y + 1} ${loc?.z - (dir?.z * 5)}`);
 }
 export function on_off(iv, itemName, index) {
     iv?.container?.setItem(index, new ItemStack(itemName));
@@ -195,3 +208,15 @@ export function loop(entity) {
         saveData(entity.id, data);
     }
 }
+export const KIT_EVENT = {
+    'cybox:tosca_paint_ddg': 'color_tosca_ddg',
+    'cybox:tosca_paint_gb': 'color_tosca_gb',
+    'cybox:tosca_paint_gw': 'color_tosca_gw',
+    'cybox:tosca_paint_kr': 'color_tosca_kr',
+    'cybox:tosca_paint_og': 'color_tosca_og',
+    'cybox:tosca_paint_pb': 'color_tosca_pb',
+    'cybox:tosca_paint_ps': 'color_tosca_ps',
+    'cybox:tosca_paint_sdg': 'color_tosca_sdg',
+    'cybox:tosca_paint_wp': 'color_tosca_wp',
+    'cybox:tosca_police_kit': 'kit_tosca_police'
+};

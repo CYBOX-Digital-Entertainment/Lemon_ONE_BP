@@ -23,6 +23,16 @@ function isEmptyContainer(entity: Entity): boolean {
     return false
 }
 
+export function hasKey(player: Player, car: Entity){
+    const inventory = player.getComponent(EntityInventoryComponent.componentId)
+    if(!inventory?.inventorySize) return false;
+    for(let i = 0; i<inventory?.inventorySize; i++){
+        const item = inventory.container?.getItem(i)
+        if(item?.typeId === "key:dw_tosca_key" && item?.getLore()[0]?.slice(14) == car.id) { return true; }
+    }
+    return false;
+}
+
 export function playAni(player: Player, eventName: string) {
     getCar(player).triggerEvent(eventName);
 }
@@ -156,11 +166,12 @@ export function tpTr(data: EntityData) {
     const tr = world.getEntity(data.trid)
     const ent = world.getEntity(data.entid)
     let loc = ent?.location
-    if (loc == undefined) return
+    let dir = ent?.getViewDirection()
+    if (loc == undefined || dir == undefined) return
     if (!data.tropen) {
         loc.y += 100
     }
-    tr?.runCommandAsync(`tp ${loc?.x} ${loc?.y} ${loc?.z}`)
+    tr?.runCommandAsync(`tp ${loc?.x - (dir?.x * 5)} ${loc?.y + 1} ${loc?.z - (dir?.z * 5)}`)
 }
 
 
@@ -197,4 +208,20 @@ export function loop(entity: Entity) {
         saveData("car:" + entity.id, data2)
         saveData(entity.id, data)
     }
+}
+
+interface KIT_EVENT {
+    [key: string]: any;
+}
+export const KIT_EVENT: KIT_EVENT = {
+    'cybox:tosca_paint_ddg': 'color_tosca_ddg',
+    'cybox:tosca_paint_gb': 'color_tosca_gb',
+    'cybox:tosca_paint_gw': 'color_tosca_gw',
+    'cybox:tosca_paint_kr': 'color_tosca_kr',
+    'cybox:tosca_paint_og': 'color_tosca_og',
+    'cybox:tosca_paint_pb': 'color_tosca_pb',
+    'cybox:tosca_paint_ps': 'color_tosca_ps',
+    'cybox:tosca_paint_sdg': 'color_tosca_sdg',
+    'cybox:tosca_paint_wp': 'color_tosca_wp',
+    'cybox:tosca_police_kit': 'kit_tosca_police'
 }
