@@ -67,9 +67,7 @@ export function openui(player, entityData) {
                     saveData(data.entid, data);
                     player.sendMessage(`트렁크가 열렸습니다.`);
                     world.sendMessage(JSON.stringify(data));
-                    if (!isEmptyContainer(trunk)) {
-                        entity.triggerEvent(`bonnet_open`);
-                    }
+                    entity.triggerEvent(`bonnet_open`);
                 }
                 else if (result.selection == 0) {
                     data.setPlid(player.id);
@@ -167,6 +165,7 @@ export function on_off(iv, itemName, index) {
 }
 export function loop(entity) {
     const data = new EntityData(readData(entity.id));
+    const trunk = data.trunk();
     const data2 = {
         headLight: false, // 헤드라이트
         left_signal: false, // 좌 신호등
@@ -177,6 +176,14 @@ export function loop(entity) {
     };
     tpTr(data);
     const component = entity.getComponent(EntityRideableComponent.componentId);
+    if (trunk == undefined)
+        return;
+    if (isEmptyContainer(trunk)) {
+        entity.triggerEvent(`freight_remove`);
+    }
+    else {
+        entity.triggerEvent(`freight_add`);
+    }
     if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         component?.ejectRiders();
         data.setRide(false);
