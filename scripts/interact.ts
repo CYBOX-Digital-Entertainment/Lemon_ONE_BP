@@ -1,6 +1,6 @@
 import { EntityMovementComponent, EntityRideableComponent, system, world } from "@minecraft/server";
 import { readData, saveData } from "./db"
-import { openui, openui2 } from "./function"
+import { KIT_EVENT, hasKey, openui, openui2 } from "./function"
 import { EntityData } from "./class"
 import { ActionFormData } from "@minecraft/server-ui";
 
@@ -22,7 +22,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     } else if (itemStack?.typeId != "key:dw_tosca_key" && (!entityData.ride && entityData.ride2 && player.id === entityData.plid)) {
         entityData.ride = true
         entityData.ride2 = false
-        console.warn("a")
         system.run(() => {
             target.triggerEvent("right_front_door_close")
             target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0)
@@ -59,7 +58,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 const isPolice = target.hasTag("police");
                 const ui = new ActionFormData()
                     .title('차')
-                    .button(`다른 플레이어 탑승 ${data.enableFriend ? '차단' : '허용'}`)
+                    .button(`다른 플레이어 탑승 ${data.enableFriend ? '차단' : '허용'}`, `textures/items/door_${data.enableFriend ? 'open' : 'close'}`)
                     .button(`§r헤드라이트 끄기\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`)
                     .button(`§r좌측 신호등\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`)
                     .button(`§r우측 신호등\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/right_signal_${data.right_signal ? 'off' : 'on'}`)
@@ -72,6 +71,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     ui.button('시동 끄기', 'textures/items/car_off')
                 }
 
+                if(!hasKey(player, target)){ return; } // 키 소지
                 ui.show(player).then(response => {
                     if (response.canceled) {
                         return;
@@ -243,6 +243,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 })
             })
         } else {
+            if(!hasKey(player, target)){ return; }
             system.run(() => {
                 new ActionFormData()
                     .title(`차`)
@@ -263,12 +264,32 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     })
             })
         }
-    } else if (itemStack?.typeId == "key:dw_tosca_key" && itemStack?.getLore()[0].slice(14) == target.id) {
+    } else if (itemStack?.typeId == "key:dw_tosca_key" && itemStack?.getLore()[0]?.slice(14) == target.id) {
         e.cancel = true
         openui(player, entityData)
     }
 
-    if (itemStack?.getLore()[0].slice(14) != target.id) {
+    if (itemStack?.getLore()[0]?.slice(14) != target.id) {
         e.cancel = true
+    }
+})
+
+
+world.beforeEvents.playerInteractWithEntity.subscribe(e => {
+    const { itemStack, player, target } = e
+
+    // 차량 치장 아이템 사용
+    if(itemStack) {
+        if(target.typeId === 'cybox:dw_tosca'){
+            if(Object.keys(KIT_EVENT).includes(itemStack.typeId)){
+                e.cancel = true;
+                if(hasKey(player, target)){
+                    system.run(() => {
+                        target.triggerEvent(KIT_EVENT[itemStack.typeId])
+                        player.runCommand(`clear @s ${itemStack.typeId} 0 1`)
+                    })
+                }
+            }
+        }
     }
 })
