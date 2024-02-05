@@ -1,4 +1,4 @@
-import { Entity, world } from "@minecraft/server"
+import { Entity, world } from "@minecraft/server";
 
 export class EntityData {
     constructor(data: EntityData | undefined = undefined) {
