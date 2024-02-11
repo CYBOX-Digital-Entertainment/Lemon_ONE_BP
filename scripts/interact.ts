@@ -20,12 +20,13 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         console.warn(`cancel`)
         return;
     } else if (itemStack?.typeId != "key:dw_tosca_key" && (!entityData.ride && entityData.ride2 && player.id === entityData.plid)) {
-        entityData.ride = true
-        entityData.ride2 = false
+        entityData.ride = true;
+        entityData.ride2 = false;
         system.run(() => {
-            target.triggerEvent("right_front_door_close")
-            target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0)
-        })
+            target.triggerEvent("right_front_door_close");
+            player.playAnimation('animation.player.riding.car');
+            target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0);
+        });
 
         saveData(target.id, entityData);
         return;
@@ -218,7 +219,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 saveData(target.id, entityData)
                                 saveData("car:" + target.id, data2)
                             }
-                            
+
                             break;
                         }
 
