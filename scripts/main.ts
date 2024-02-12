@@ -61,7 +61,7 @@ const overworld = world.getDimension(`overworld`);
 const end = world.getDimension(`the_end`);
 const nether = world.getDimension(`nether`);
 
-//렉 방지를 위해 10틱(0.5초)마다 반복
+
 system.runInterval(() => {
     overworld.getEntities({
         type: "cybox:dw_tosca"
@@ -80,4 +80,4 @@ system.runInterval(() => {
     }).forEach(f => {
         loop(f)
     });
-}, 10);
+});

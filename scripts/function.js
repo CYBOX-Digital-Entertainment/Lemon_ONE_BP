@@ -178,6 +178,7 @@ export function on_off(iv, itemName, index) {
 }
 export function loop(entity) {
     const data = new EntityData(readData(entity.id));
+    const cardata = readData("car:" + entity.id);
     const trunk = data.trunk();
     const data2 = {
         headLight: false, // 헤드라이트
@@ -187,6 +188,10 @@ export function loop(entity) {
         speed: 30,
         siren: false
     };
+    if (cardata.headLight) {
+        entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
+        entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level":15]`);
+    }
     tpTr(data);
     const component = entity.getComponent(EntityRideableComponent.componentId);
     if (trunk == undefined)

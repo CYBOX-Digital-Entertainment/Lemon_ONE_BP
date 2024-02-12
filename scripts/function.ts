@@ -179,6 +179,14 @@ export function on_off(iv: EntityInventoryComponent, itemName: string, index: nu
 
 export function loop(entity: Entity) {
     const data = new EntityData(readData(entity.id) as EntityData)
+    const cardata = readData("car:" + entity.id) as {
+        headLight: boolean, // 헤드라이트
+        left_signal: boolean, // 좌 신호등
+        right_signal: boolean,// 우 신호등
+        window: boolean, //창문
+        speed: number,
+        siren: boolean
+    }
     const trunk = data.trunk()
     const data2 = {
         headLight: false, // 헤드라이트
@@ -188,7 +196,12 @@ export function loop(entity: Entity) {
         speed: 30,
         siren: false
     }
+    if (cardata.headLight) {
+        entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`)
+        entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level":15]`)
+    }
     tpTr(data)
+    
     const component = entity.getComponent(EntityRideableComponent.componentId)
     if (trunk == undefined) return;
     if (isEmptyContainer(trunk)) {
