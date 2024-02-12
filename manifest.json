@@ -6,7 +6,7 @@
 		"min_engine_version": [
 			1,
 			20,
-			40
+			60
 		],
 		"uuid": "121abcd5-2b08-46c4-845a-04247d699b08",
 		"version": [
@@ -48,7 +48,7 @@
 		},
 		{
 			"module_name": "@minecraft/server",
-			"version": "1.8.0-beta"
+			"version": "1.9.0-beta"
 		},
 		{
 			"module_name": "@minecraft/server-gametest",

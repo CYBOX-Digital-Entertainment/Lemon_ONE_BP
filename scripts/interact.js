@@ -22,6 +22,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         entityData.ride2 = false;
         system.run(() => {
             target.triggerEvent("right_front_door_close");
+            player.playAnimation('animation.player.riding.car');
             target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0);
         });
         saveData(target.id, entityData);
