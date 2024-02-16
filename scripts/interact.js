@@ -156,6 +156,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) + 1}`);
                                 data.speed = speed[speed.indexOf(data.speed) + 1];
                                 world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
+                                target.playAnimation(`animation.tosca.speed${speed.indexOf(data.speed)}`);
                             }
                             break;
                         }
@@ -167,6 +168,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) - 1}`);
                                 data.speed = speed[speed.indexOf(data.speed) - 1];
                                 world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
+                                target.playAnimation(`animation.tosca.speed${speed.indexOf(data.speed)}`);
                             }
                             break;
                         }

@@ -179,14 +179,6 @@ export function on_off(iv: EntityInventoryComponent, itemName: string, index: nu
 
 export function loop(entity: Entity) {
     const data = new EntityData(readData(entity.id) as EntityData)
-    const cardata = readData("car:" + entity.id) as {
-        headLight: boolean, // 헤드라이트
-        left_signal: boolean, // 좌 신호등
-        right_signal: boolean,// 우 신호등
-        window: boolean, //창문
-        speed: number,
-        siren: boolean
-    }
     const trunk = data.trunk()
     const data2 = {
         headLight: false, // 헤드라이트
@@ -196,12 +188,7 @@ export function loop(entity: Entity) {
         speed: 30,
         siren: false
     }
-    if (cardata.headLight) {
-        entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`)
-        entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level":15]`)
-    }
     tpTr(data)
-    
     const component = entity.getComponent(EntityRideableComponent.componentId)
     if (trunk == undefined) return;
     if (isEmptyContainer(trunk)) {
@@ -225,6 +212,42 @@ export function loop(entity: Entity) {
         saveData("car:" + entity.id, data2)
         saveData(entity.id, data)
     }
+
+
+    const dimension = entity.dimension;
+    const id = entity.id;
+    const entityData = readData(entity.id) as EntityData
+    const getSolid = (entity: Entity, pos: string) => dimension.getEntities({ type: "cybox:dw_tosca_solid", name: `${pos}:${String(entity.id)}`})
+
+    if(getSolid(entity, 'front').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)){
+        getSolid(entity, 'front').forEach(x => x.remove());
+    }
+    if(!(entityData.ride2 && !entityData.ride) && !entityData.enableFriend){
+        dimension.spawnEntity("cybox:dw_tosca_solid", entity.location).nameTag = `front:${id}`;
+    }
+
+    if(getSolid(entity, 'back').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)){
+        getSolid(entity, 'back').forEach(x => x.remove());
+    }
+    if(!(entityData.ride2 && !entityData.ride) && !entityData.enableFriend){
+        dimension.spawnEntity("cybox:dw_tosca_solid", entity.location).nameTag = `back:${id}`;
+    }
+
+    getSolid(entity, 'front').forEach(x => {
+        x.teleport({
+            x: entity.location.x + entity.getViewDirection().x * -0.5,
+            y: entity.location.y,
+            z: entity.location.z + entity.getViewDirection().z * -0.5
+        })
+    })
+
+    getSolid(entity, 'back').forEach(x => {
+        x.teleport({
+            x: entity.location.x + entity.getViewDirection().x * -4.7,
+            y: entity.location.y,
+            z: entity.location.z + entity.getViewDirection().z * -4.7
+        })
+    })
 }
 
 interface KIT_EVENT {

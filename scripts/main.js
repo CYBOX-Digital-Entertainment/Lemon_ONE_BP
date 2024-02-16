@@ -46,12 +46,20 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         waitingItemStack = new ItemStack("key:dw_tosca_key", 1);
         waitingItemStack.setLore([`등록된 자동차 아이디 : ${entity.id}`]);
         truncInvComponent?.container?.setItem(13, waitingItemStack);
-        world.sendMessage(JSON.stringify(data));
+        world.setDynamicProperty(`car:${entity.id}`, JSON.stringify({
+            headLight: false, // 헤드라이트
+            left_signal: false, // 좌 신호등
+            right_signal: false, // 우 신호등
+            window: true, //창문
+            speed: 30,
+            siren: false
+        }));
     }
 });
 const overworld = world.getDimension(`overworld`);
 const end = world.getDimension(`the_end`);
 const nether = world.getDimension(`nether`);
+//렉 방지를 위해 10틱(0.5초)마다 반복
 system.runInterval(() => {
     overworld.getEntities({
         type: "cybox:dw_tosca"
@@ -68,4 +76,4 @@ system.runInterval(() => {
     }).forEach(f => {
         loop(f);
     });
-});
+}, 10);
