@@ -217,7 +217,7 @@ export function loop(entity: Entity) {
     const dimension = entity.dimension;
     const id = entity.id;
     const entityData = readData(entity.id) as EntityData
-    const getSolid = (entity: Entity, pos: string) => dimension.getEntities({ type: "cybox:dw_tosca_solid", name: `${pos}:${String(entity.id)}`})
+    const getSolid = (entity: Entity, pos: string) => dimension.getEntities({ type: "cybox:dw_tosca_solid", name: `${pos}:${String(entity.id)}`});
 
     if(getSolid(entity, 'front').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)){
         getSolid(entity, 'front').forEach(x => x.remove());

@@ -76,4 +76,12 @@ system.runInterval(() => {
     }).forEach(f => {
         loop(f);
     });
+    ["overworld", "the_end", "nether"].forEach(dimension => {
+        const solidExist = (id) => world.getDimension(dimension).getEntities({ type: "cybox:dw_tosca" }).filter(x => x.id === id).length !== 0;
+        world.getDimension(dimension).getEntities({ type: "cybox:dw_tosca_solid" }).forEach(x => {
+            if (!solidExist(x.nameTag.split(":")[1])) {
+                x.remove();
+            }
+        });
+    });
 }, 10);

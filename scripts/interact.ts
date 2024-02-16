@@ -24,7 +24,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         entityData.ride2 = false;
         system.run(() => {
             target.triggerEvent("right_front_door_close");
-            player.playAnimation('animation.player.riding.car');
+            player.playAnimation('animation.tosca.dummy');
             target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0);
         });
 
@@ -170,7 +170,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 data.speed = speed[speed.indexOf(data.speed) + 1];
                                 world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data))
                                 
-                                target.playAnimation(`animation.tosca.speed${speed.indexOf(data.speed)}`)
+                                target.playAnimation(`animation.tosca.dummy${speed.indexOf(data.speed)}`)
                             }
 
                             break;
@@ -184,7 +184,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 data.speed = speed[speed.indexOf(data.speed) - 1];
                                 world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data))
 
-                                target.playAnimation(`animation.tosca.speed${speed.indexOf(data.speed)}`)
+                                target.playAnimation(`animation.tosca.dummy${speed.indexOf(data.speed)}`)
                             }
 
                             break;

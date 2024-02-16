@@ -1,5 +1,5 @@
 {
-    "format_version": "1.20.10",
+    "format_version": "1.16.0",
     "minecraft:entity": {
         "description": {
             "identifier": "addon:tr",
@@ -22,8 +22,8 @@
                 "container_type":"container"
 			},
             "minecraft:nameable": {
-                "allowed_name_tag_renaming":false
-            }
+			  "always_show": false
+			}
         }
     }
 }
