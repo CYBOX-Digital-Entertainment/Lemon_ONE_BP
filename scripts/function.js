@@ -219,36 +219,36 @@ export function loop(entity) {
         saveData("car:" + entity.id, data2);
         saveData(entity.id, data);
     }
-    const dimension = entity.dimension;
-    const id = entity.id;
-    const entityData = readData(entity.id);
-    const getSolid = (entity, pos) => dimension.getEntities({ type: "cybox:dw_tosca_solid", name: `${pos}:${String(entity.id)}` });
-    if (getSolid(entity, 'front').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)) {
-        getSolid(entity, 'front').forEach(x => x.remove());
-    }
-    if (!(entityData.ride2 && !entityData.ride) && !entityData.enableFriend) {
-        dimension.spawnEntity("cybox:dw_tosca_solid", entity.location).nameTag = `front:${id}`;
-    }
-    if (getSolid(entity, 'back').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)) {
-        getSolid(entity, 'back').forEach(x => x.remove());
-    }
-    if (!(entityData.ride2 && !entityData.ride) && !entityData.enableFriend) {
-        dimension.spawnEntity("cybox:dw_tosca_solid", entity.location).nameTag = `back:${id}`;
-    }
-    getSolid(entity, 'front').forEach(x => {
-        x.teleport({
-            x: entity.location.x + entity.getViewDirection().x * -0.5,
-            y: entity.location.y,
-            z: entity.location.z + entity.getViewDirection().z * -0.5
-        });
-    });
-    getSolid(entity, 'back').forEach(x => {
-        x.teleport({
-            x: entity.location.x + entity.getViewDirection().x * -4.7,
-            y: entity.location.y,
-            z: entity.location.z + entity.getViewDirection().z * -4.7
-        });
-    });
+    // const dimension = entity.dimension;
+    // const id = entity.id;
+    // const entityData = readData(entity.id) as EntityData
+    // const getSolid = (entity: Entity, pos: string) => dimension.getEntities({ type: "cybox:dw_tosca_solid", name: `${pos}:${String(entity.id)}` });
+    // if (getSolid(entity, 'front').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)) {
+    //     getSolid(entity, 'front').forEach(x => x.remove());
+    // }
+    // if (!(entityData.ride2 && !entityData.ride) && !entityData.enableFriend) {
+    //     dimension.spawnEntity("cybox:dw_tosca_solid", entity.location).nameTag = `front:${id}`;
+    // }
+    // if (getSolid(entity, 'back').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)) {
+    //     getSolid(entity, 'back').forEach(x => x.remove());
+    // }
+    // if (!(entityData.ride2 && !entityData.ride) && !entityData.enableFriend) {
+    //     dimension.spawnEntity("cybox:dw_tosca_solid", entity.location).nameTag = `back:${id}`;
+    // }
+    // getSolid(entity, 'front').forEach(x => {
+    //     x.teleport({
+    //         x: entity.location.x + entity.getViewDirection().x * -0.5,
+    //         y: entity.location.y,
+    //         z: entity.location.z + entity.getViewDirection().z * -0.5
+    //     })
+    // })
+    // getSolid(entity, 'back').forEach(x => {
+    //     x.teleport({
+    //         x: entity.location.x + entity.getViewDirection().x * -4.7,
+    //         y: entity.location.y,
+    //         z: entity.location.z + entity.getViewDirection().z * -4.7
+    //     })
+    // })
 }
 export const KIT_EVENT = {
     'cybox:tosca_paint_ddg': 'color_tosca_ddg',

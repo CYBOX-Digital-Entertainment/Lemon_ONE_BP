@@ -56,32 +56,22 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         }));
     }
 });
-const overworld = world.getDimension(`overworld`);
-const end = world.getDimension(`the_end`);
-const nether = world.getDimension(`nether`);
+const worlds = [world.getDimension(`overworld`), world.getDimension(`the_end`), world.getDimension(`nether`)];
 //렉 방지를 위해 10틱(0.5초)마다 반복
 system.runInterval(() => {
-    overworld.getEntities({
-        type: "cybox:dw_tosca"
-    }).forEach(f => {
-        loop(f);
-    });
-    end.getEntities({
-        type: "cybox:dw_tosca"
-    }).forEach(f => {
-        loop(f);
-    });
-    nether.getEntities({
-        type: "cybox:dw_tosca"
-    }).forEach(f => {
-        loop(f);
-    });
-    ["overworld", "the_end", "nether"].forEach(dimension => {
-        const solidExist = (id) => world.getDimension(dimension).getEntities({ type: "cybox:dw_tosca" }).filter(x => x.id === id).length !== 0;
-        world.getDimension(dimension).getEntities({ type: "cybox:dw_tosca_solid" }).forEach(x => {
-            if (!solidExist(x.nameTag.split(":")[1])) {
-                x.remove();
-            }
+    worlds.forEach(dimension => {
+        dimension.getEntities({
+            type: "cybox:dw_tosca"
+        }).forEach(f => {
+            loop(f);
         });
     });
+    // ["overworld", "the_end", "nether"].forEach(dimension => {
+    //     const solidExist = (id: string) => world.getDimension(dimension).getEntities({ type: "cybox:dw_tosca" }).filter(x => x.id === id).length !== 0;
+    //     world.getDimension(dimension).getEntities({ type: "cybox:dw_tosca_solid" }).forEach(x => {
+    //         if(!solidExist(x.nameTag.split(":")[1])){
+    //             x.remove()
+    //         }
+    //     })
+    // })
 });
