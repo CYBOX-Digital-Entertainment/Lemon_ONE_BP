@@ -6,6 +6,20 @@ import { ActionFormData } from "@minecraft/server-ui";
 
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     const { itemStack, player, target } = e
+    // 차량 치장 아이템 사용
+    if (itemStack) {
+        if (target.typeId === 'cybox:dw_tosca') {
+            if (Object.keys(KIT_EVENT).includes(itemStack.typeId)) {
+                e.cancel = true;
+                if (hasKey(player, target)) {
+                    system.run(() => {
+                        target.triggerEvent(KIT_EVENT[itemStack.typeId])
+                        player.runCommand(`clear @s ${itemStack.typeId} 0 1`)
+                    })
+                }
+            }
+        }
+    }
     if (target.typeId != "cybox:dw_tosca" || itemStack?.typeId === "cybox:dw_tosca_spawn_egg" || itemStack?.typeId.startsWith(`cybox:`)) {
         return;
     }
@@ -280,21 +294,3 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
 })
 
 
-world.beforeEvents.playerInteractWithEntity.subscribe(e => {
-    const { itemStack, player, target } = e
-
-    // 차량 치장 아이템 사용
-    if(itemStack) {
-        if(target.typeId === 'cybox:dw_tosca'){
-            if(Object.keys(KIT_EVENT).includes(itemStack.typeId)){
-                e.cancel = true;
-                if(hasKey(player, target)){
-                    system.run(() => {
-                        target.triggerEvent(KIT_EVENT[itemStack.typeId])
-                        player.runCommand(`clear @s ${itemStack.typeId} 0 1`)
-                    })
-                }
-            }
-        }
-    }
-})

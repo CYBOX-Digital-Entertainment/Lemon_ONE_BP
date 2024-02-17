@@ -23,12 +23,12 @@ function isEmptyContainer(entity: Entity): boolean {
     return false
 }
 
-export function hasKey(player: Player, car: Entity){
+export function hasKey(player: Player, car: Entity) {
     const inventory = player.getComponent(EntityInventoryComponent.componentId)
-    if(!inventory?.inventorySize) return false;
-    for(let i = 0; i<inventory?.inventorySize; i++){
+    if (!inventory?.inventorySize) return false;
+    for (let i = 0; i < inventory?.inventorySize; i++) {
         const item = inventory.container?.getItem(i)
-        if(item?.typeId === "key:dw_tosca_key" && item?.getLore()[0]?.slice(14) == car.id) { return true; }
+        if (item?.typeId === "key:dw_tosca_key" && item?.getLore()[0]?.slice(14) == car.id) { return true; }
     }
     return false;
 }
@@ -179,6 +179,18 @@ export function on_off(iv: EntityInventoryComponent, itemName: string, index: nu
 
 export function loop(entity: Entity) {
     const data = new EntityData(readData(entity.id) as EntityData)
+    const cardata = readData("car:" + entity.id) as {
+        headLight: boolean, // 헤드라이트
+        left_signal: boolean, // 좌 신호등
+        right_signal: boolean,// 우 신호등
+        window: boolean, //창문
+        speed: number,
+        siren: boolean
+    }
+    if (cardata.headLight) {
+        entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
+        entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level"=15]`);
+    }
     const trunk = data.trunk()
     const data2 = {
         headLight: false, // 헤드라이트
@@ -217,19 +229,19 @@ export function loop(entity: Entity) {
     const dimension = entity.dimension;
     const id = entity.id;
     const entityData = readData(entity.id) as EntityData
-    const getSolid = (entity: Entity, pos: string) => dimension.getEntities({ type: "cybox:dw_tosca_solid", name: `${pos}:${String(entity.id)}`});
+    const getSolid = (entity: Entity, pos: string) => dimension.getEntities({ type: "cybox:dw_tosca_solid", name: `${pos}:${String(entity.id)}` });
 
-    if(getSolid(entity, 'front').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)){
+    if (getSolid(entity, 'front').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)) {
         getSolid(entity, 'front').forEach(x => x.remove());
     }
-    if(!(entityData.ride2 && !entityData.ride) && !entityData.enableFriend){
+    if (!(entityData.ride2 && !entityData.ride) && !entityData.enableFriend) {
         dimension.spawnEntity("cybox:dw_tosca_solid", entity.location).nameTag = `front:${id}`;
     }
 
-    if(getSolid(entity, 'back').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)){
+    if (getSolid(entity, 'back').length !== 1 || ((entityData.ride2 && !entityData.ride) || entityData.enableFriend)) {
         getSolid(entity, 'back').forEach(x => x.remove());
     }
-    if(!(entityData.ride2 && !entityData.ride) && !entityData.enableFriend){
+    if (!(entityData.ride2 && !entityData.ride) && !entityData.enableFriend) {
         dimension.spawnEntity("cybox:dw_tosca_solid", entity.location).nameTag = `back:${id}`;
     }
 

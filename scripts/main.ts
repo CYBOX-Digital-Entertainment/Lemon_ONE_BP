@@ -96,4 +96,4 @@ system.runInterval(() => {
             }
         })
     })
-}, 10);
+});
