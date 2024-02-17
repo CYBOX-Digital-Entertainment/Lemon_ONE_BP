@@ -179,7 +179,7 @@ export function on_off(iv, itemName, index) {
 export function loop(entity) {
     const data = new EntityData(readData(entity.id));
     const cardata = readData("car:" + entity.id);
-    if (cardata.headLight) {
+    if (!cardata.headLight) {
         entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
         entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level"=15]`);
     }

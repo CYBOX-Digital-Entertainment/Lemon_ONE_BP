@@ -187,7 +187,7 @@ export function loop(entity: Entity) {
         speed: number,
         siren: boolean
     }
-    if (cardata.headLight) {
+    if (!cardata.headLight) {
         entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
         entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level"=15]`);
     }
