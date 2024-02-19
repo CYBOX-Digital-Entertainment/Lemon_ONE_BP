@@ -203,6 +203,10 @@ export function loop(entity) {
         entity.triggerEvent(`freight_add`);
     }
     if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
+        const d = JSON.parse(world.getDynamicProperty(`car:${entity.id}`));
+        if (d.disc != undefined) {
+            entity.dimension.spawnItem(new ItemStack(`minecraft:music_disc_${d.disc}`, 1), entity.location);
+        }
         component?.ejectRiders();
         data.setRide(false);
         if (data.option) {

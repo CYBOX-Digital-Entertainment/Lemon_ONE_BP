@@ -1,4 +1,4 @@
-import { Dimension, EntityInventoryComponent, ItemStack, system, world } from "@minecraft/server"
+import { Dimension, EntityInventoryComponent, ItemStack, Player, system, world } from "@minecraft/server"
 import "./interact"
 import { readData, saveData } from "./db"
 import { EntityData } from "./class"
@@ -59,23 +59,35 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
             right_signal: false,// 우 신호등
             window: true, //창문
             speed: 30,
-            siren: false
+            siren: false,
+            mode : 0
         }));
     }
 });
 
 const worlds = [world.getDimension(`overworld`),world.getDimension(`the_end`),world.getDimension(`nether`)]
 
-
+let rider: string[] = [];
 //렉 방지를 위해 10틱(0.5초)마다 반복
 system.runInterval(() => {
+    const list: string[] = [];
     worlds.forEach(dimension => {
         dimension.getEntities({
             type: "cybox:dw_tosca"
         }).forEach(f => {
             loop(f)
+            f.getComponent('rideable')?.getRiders().forEach(x=>{
+                if(list.includes(x.id) == false) list.push(x.id);
+            })
         });
     })
+    rider.filter(x=> list.includes(x) == false).forEach(x=>{
+        stopSound(x);
+        system.runTimeout(()=>{
+            stopSound(x)
+        },60)
+    });
+    rider = list;
     // ["overworld", "the_end", "nether"].forEach(dimension => {
     //     const solidExist = (id: string) => world.getDimension(dimension).getEntities({ type: "cybox:dw_tosca" }).filter(x => x.id === id).length !== 0;
     //     world.getDimension(dimension).getEntities({ type: "cybox:dw_tosca_solid" }).forEach(x => {
@@ -85,3 +97,28 @@ system.runInterval(() => {
     //     })
     // })
 });
+
+const discList = [
+    '13',
+    '11',
+    '5',
+    'blocks',
+    'cat',
+    'chirp',
+    'far',
+    'mall',
+    'otherside',
+    'pigstep',
+    'relic',
+    'stal',
+    'strad',
+    'wait',
+    'ward'
+]
+export function stopSound(id: string){
+    const target = world.getEntity(id);
+    if(target == undefined) return;
+    discList.forEach(x=>{
+        target.runCommandAsync(`stopsound @s record.${x}`)
+    });
+}
