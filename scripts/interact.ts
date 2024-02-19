@@ -351,10 +351,11 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 if(res.canceled == true) return;
                                 data.mode = res.selection;
                                 if(res.selection == 0){
+                                    target.triggerEvent('at_p');
                                     target.triggerEvent('speed0');
                                     target.triggerEvent('neutral_off');
                                 } else if(res.selection == 1){
-                                    target.triggerEvent('speed0');
+                                    target.triggerEvent('at_r');
                                     target.triggerEvent('neutral_off');
                                 } else if(res.selection == 2){
                                     target.triggerEvent('neutral_on');
