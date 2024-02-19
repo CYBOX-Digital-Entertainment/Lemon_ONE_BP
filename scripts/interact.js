@@ -107,6 +107,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 data.right_signal = false;
                                 data.window = true;
                                 data.siren = false;
+                                target.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
                                 world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                             }
                             break;
