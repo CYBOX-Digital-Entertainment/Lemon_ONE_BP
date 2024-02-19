@@ -204,9 +204,9 @@ export function loop(entity: Entity) {
     const component = entity.getComponent(EntityRideableComponent.componentId)
     if (trunk == undefined) return;
     if (isEmptyContainer(trunk)) {
-        entity.triggerEvent(`freight_remove`)
+        entity.triggerEvent(`dummy`)
     } else {
-        entity.triggerEvent(`freight_add`)
+        entity.triggerEvent(`dummy`)
     }
     if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         const d = JSON.parse(world.getDynamicProperty(`car:${entity.id}`) as string);
