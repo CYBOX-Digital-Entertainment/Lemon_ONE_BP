@@ -205,6 +205,7 @@ export function loop(entity) {
     if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         const d = JSON.parse(world.getDynamicProperty(`car:${entity.id}`));
         if (d.disc != undefined) {
+            entity.triggerEvent(`light_on`);
             entity.dimension.spawnItem(new ItemStack(`minecraft:music_disc_${d.disc}`, 1), entity.location);
         }
         component?.ejectRiders();
