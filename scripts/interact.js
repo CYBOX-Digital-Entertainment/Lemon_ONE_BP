@@ -85,7 +85,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     if (data.disc != undefined) {
                         player.runCommandAsync(`give @s music_disc_${data.disc}`);
                         rid.getRiders().forEach(entity => {
-                            entity.triggerEvent(`light_on`);
+                            target.triggerEvent(`light_on`);
                             entity.runCommandAsync(`stopsound @s record.${data.disc}`);
                             const k = data.disc;
                             system.runTimeout(() => {
@@ -279,7 +279,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0);
                                 player.runCommandAsync(`give @s music_disc_${data.disc}`);
                                 rid.getRiders().forEach(entity => {
-                                    entity.triggerEvent(`light_on`);
+                                    target.triggerEvent(`light_on`);
                                     entity.runCommandAsync(`stopsound @s record.${data.disc}`);
                                     const k = data.disc;
                                     system.runTimeout(() => {
@@ -307,7 +307,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0);
                             player.runCommandAsync(`give @s music_disc_${data.disc}`);
                             rid.getRiders().forEach(entity => {
-                                entity.triggerEvent(`light_on`);
+                                target.triggerEvent(`light_on`);
                                 entity.runCommandAsync(`stopsound @s record.${data.disc}`);
                                 const k = data.disc;
                                 system.runTimeout(() => {
@@ -350,7 +350,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         case '음반 꺼내기': {
                             player.runCommandAsync(`give @s music_disc_${data.disc}`);
                             rid.getRiders().forEach(entity => {
-                                entity.triggerEvent(`light_on`);
+                                target.triggerEvent(`light_on`);
                                 entity.runCommandAsync(`stopsound @s record.${data.disc}`);
                                 const k = data.disc;
                                 system.runTimeout(() => {

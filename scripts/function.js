@@ -197,10 +197,10 @@ export function loop(entity) {
     if (trunk == undefined)
         return;
     if (isEmptyContainer(trunk)) {
-        entity.triggerEvent(`dummy`);
+        entity.triggerEvent(`freight_remove`);
     }
     else {
-        entity.triggerEvent(`dummy`);
+        entity.triggerEvent(`freight_add`);
     }
     if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         const d = JSON.parse(world.getDynamicProperty(`car:${entity.id}`));
