@@ -162,8 +162,8 @@ export function openui2(player, entityData) {
     });
 }
 export function tpTr(data) {
-    const tr = world.getEntity(data.trid);
-    const ent = world.getEntity(data.entid);
+    const tr = data.trunk();
+    const ent = data.entity();
     let loc = ent?.location;
     let dir = ent?.getViewDirection();
     if (loc == undefined || dir == undefined)
@@ -179,9 +179,12 @@ export function on_off(iv, itemName, index) {
 export function loop(entity) {
     const data = new EntityData(readData(entity.id));
     const cardata = readData("car:" + entity.id);
-    if (!cardata.headLight) {
+    if (cardata.headLight === false && data.option === true) {
         entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
         entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level"=15]`);
+    }
+    else if (data.option === false) {
+        entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
     }
     const trunk = data.trunk();
     const data2 = {

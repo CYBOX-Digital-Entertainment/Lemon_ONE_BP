@@ -161,8 +161,8 @@ export function openui2(player: Player, entityData: EntityData) {
 }
 
 export function tpTr(data: EntityData) {
-    const tr = world.getEntity(data.trid)
-    const ent = world.getEntity(data.entid)
+    const tr = data.trunk()
+    const ent = data.entity()
     let loc = ent?.location
     let dir = ent?.getViewDirection()
     if (loc == undefined || dir == undefined) return
@@ -187,9 +187,11 @@ export function loop(entity: Entity) {
         speed: number,
         siren: boolean
     }
-    if (!cardata.headLight) {
+    if (cardata.headLight === false && data.option === true) {
         entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
         entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level"=15]`);
+    } else if (data.option === false) {
+        entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
     }
     const trunk = data.trunk()
     const data2 = {
@@ -210,7 +212,7 @@ export function loop(entity: Entity) {
     }
     if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         const d = JSON.parse(world.getDynamicProperty(`car:${entity.id}`) as string);
-        if(d.disc != undefined){
+        if (d.disc != undefined) {
             entity.triggerEvent(`light_on`)
             entity.dimension.spawnItem(new ItemStack(`minecraft:music_disc_${d.disc}`,1),entity.location);
         }

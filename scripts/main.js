@@ -59,7 +59,6 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
 });
 const worlds = [world.getDimension(`overworld`), world.getDimension(`the_end`), world.getDimension(`nether`)];
 let rider = [];
-//렉 방지를 위해 10틱(0.5초)마다 반복
 system.runInterval(() => {
     const list = [];
     worlds.forEach(dimension => {
