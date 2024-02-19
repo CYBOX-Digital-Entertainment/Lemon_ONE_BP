@@ -356,6 +356,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                     target.triggerEvent('neutral_off');
                                 } else if(res.selection == 1){
                                     target.triggerEvent('at_r');
+                                    target.triggerEvent('speed0');
                                     target.triggerEvent('neutral_off');
                                 } else if(res.selection == 2){
                                     target.triggerEvent('neutral_on');
