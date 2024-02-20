@@ -237,10 +237,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         }
 
                         case `§r속도 증가\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`: {
-                            if(data.mode == 0 || data.mode == 1) {
-                                player.sendMessage(`자동변속기 P, R 모드에서는 차량 속도가 낮게 제한됩니다.`);
-                                break;
-                            }
                             if (speed.indexOf(data.speed) === 4) {
                                 player.sendMessage(`§4최대 속력입니다.`)
                             } else {
@@ -354,11 +350,11 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             actionform.show(player).then(res=>{
                                 if(res.canceled == true) return;
                                 data.mode = res.selection;
+                                saveData("car:" + target.id, data);
                                 if(res.selection == 0){
                                     target.triggerEvent('at_p');
                                     target.triggerEvent('speed0');
                                     target.triggerEvent('neutral_off');
-                                    data.speed = 30;
                                 } else if(res.selection == 1){
                                     target.triggerEvent('at_r');
                                     target.triggerEvent('speed0');
@@ -368,7 +364,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 } else if(res.selection == 3) {
                                     target.triggerEvent('at_d');
                                 }
-                                saveData("car:" + target.id, data);
                             });
                             break;
                         }
@@ -383,8 +378,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 },60);
                             })
                             data.disc = undefined;
-                            world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
-                            break;
+                            world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data))
                         }
                     }
                 })

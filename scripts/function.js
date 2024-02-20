@@ -122,8 +122,7 @@ export function openui2(player, entityData) {
                         right_signal: false, // 우 신호등
                         window: true, //창문
                         speed: 30,
-                        siren: false,
-                        mode: 0
+                        siren: false
                     };
                     data.option = false;
                     data.ride2 = false;
@@ -148,8 +147,7 @@ export function openui2(player, entityData) {
                         right_signal: false, // 우 신호등
                         window: true, //창문
                         speed: 30,
-                        siren: false,
-                        mode: 0,
+                        siren: false
                     };
                     data.option = false;
                     data.ride2 = false;
@@ -195,8 +193,7 @@ export function loop(entity) {
         right_signal: false, // 우 신호등
         window: true, //창문
         speed: 30,
-        siren: false,
-        mode: 0
+        siren: false
     };
     tpTr(data);
     const component = entity.getComponent(EntityRideableComponent.componentId);
