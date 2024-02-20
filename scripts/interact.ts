@@ -350,6 +350,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             actionform.show(player).then(res=>{
                                 if(res.canceled == true) return;
                                 data.mode = res.selection;
+                                saveData("car:" + target.id, data);
                                 if(res.selection == 0){
                                     target.triggerEvent('at_p');
                                     target.triggerEvent('speed0');
@@ -363,7 +364,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 } else if(res.selection == 3) {
                                     target.triggerEvent('at_d');
                                 }
-                                saveData("car:" + target.id, data);
                             });
                             break;
                         }

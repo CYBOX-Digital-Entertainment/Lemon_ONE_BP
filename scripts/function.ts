@@ -122,7 +122,8 @@ export function openui2(player: Player, entityData: EntityData) {
                             right_signal: false,// 우 신호등
                             window: true, //창문
                             speed: 30,
-                            siren: false
+                            siren: false,
+                            mode:0
                         }
                         data.option = false
                         data.ride2 = false
@@ -145,7 +146,8 @@ export function openui2(player: Player, entityData: EntityData) {
                             right_signal: false,// 우 신호등
                             window: true, //창문
                             speed: 30,
-                            siren: false
+                            siren: false,
+                            mode : 0,
                         }
                         data.option = false
                         data.ride2 = false
@@ -200,7 +202,8 @@ export function loop(entity: Entity) {
         right_signal: false,// 우 신호등
         window: true, //창문
         speed: 30,
-        siren: false
+        siren: false,
+        mode : 0
     }
     tpTr(data)
     const component = entity.getComponent(EntityRideableComponent.componentId)
