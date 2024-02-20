@@ -19,8 +19,7 @@
             },
             "minecraft:inventory": {
 				"inventory_size": 16,
-                "container_type":"container",
-				"can_be_siphoned_from": false
+                "container_type":"container"
 			},
             "minecraft:nameable": {
 			  "always_show": false

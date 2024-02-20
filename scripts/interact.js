@@ -223,6 +223,10 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
                         case `§r속도 증가\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`: {
+                            if (data.mode == 0 || data.mode == 1) {
+                                player.sendMessage(`자동변속기 P, R 모드에서는 차량 속도가 낮게 제한됩니다.`);
+                                break;
+                            }
                             if (speed.indexOf(data.speed) === 4) {
                                 player.sendMessage(`§4최대 속력입니다.`);
                             }
@@ -333,6 +337,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                     target.triggerEvent('at_p');
                                     target.triggerEvent('speed0');
                                     target.triggerEvent('neutral_off');
+                                    data.speed = 30;
                                 }
                                 else if (res.selection == 1) {
                                     target.triggerEvent('at_r');
@@ -361,6 +366,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             });
                             data.disc = undefined;
                             world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
+                            break;
                         }
                     }
                 });
