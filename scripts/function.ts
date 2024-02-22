@@ -3,6 +3,23 @@ import { EntityData } from "./class"
 import { readData, saveData } from "./db"
 import { ActionFormData } from "@minecraft/server-ui";
 
+const messageCt = new Map();
+
+function cannotMoveInN(entity: Entity){
+    const riders = entity.getComponent('rideable')?.getRiders();
+    const vel = Object.values(entity.getVelocity()).map(x=>Math.abs(x));
+    if(riders == undefined || riders[0]?.typeId != "minecraft:player") return;
+    if(vel[0] + vel[2] < 0.3) return;
+    entity.getComponent('movement')?.setCurrentValue(0)
+    entity.clearVelocity();
+    
+    if(messageCt.has(riders[0]) == false || messageCt.get(riders[0]) <= system.currentTick){
+        world.getAllPlayers()?.find(p=>p.nameTag == riders[0].nameTag)?.sendMessage(`자동변속기 N 모드일때는 차량을 움직일 수 없습니다`);
+        messageCt.set(riders[0],system.currentTick+10);
+    }
+    return;
+}
+
 function getCar(player: Player) {
     const cars = player.dimension.getEntities({ type: "cybox:dw_tosca" });
     for (const car of cars) {
@@ -187,13 +204,17 @@ export function loop(entity: Entity) {
         right_signal: boolean,// 우 신호등
         window: boolean, //창문
         speed: number,
-        siren: boolean
+        siren: boolean,
+        mode : number
     }
     if (cardata.headLight === false && data.option === true) {
         entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
         entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level"=15]`);
     } else if (data.option === false) {
         entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
+    }
+    if(cardata.mode == 2){
+        cannotMoveInN(entity)
     }
     const trunk = data.trunk()
     const data2 = {

@@ -363,10 +363,13 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                     target.triggerEvent('at_r');
                                     target.triggerEvent('speed0');
                                     target.triggerEvent('neutral_off');
+                                    target.triggerEvent(`speed0`)
                                 } else if(res.selection == 2){
                                     target.triggerEvent('neutral_on');
+                                    data.speed = 30;
                                 } else if(res.selection == 3) {
                                     target.triggerEvent('at_d');
+                                    target.triggerEvent(`speed0`)
                                 }
                                 saveData("car:" + target.id, data);
                             });
