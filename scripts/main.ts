@@ -43,7 +43,9 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         const tr = entity.dimension.spawnEntity(`addon:tr`, entity.location);
         const truncInvComponent = tr.getComponent(EntityInventoryComponent.componentId);
         initialItems.forEach(initialItem => truncInvComponent?.container?.addItem(new ItemStack(initialItem, 3)));
-
+        entity.triggerEvent('at_p');
+        entity.triggerEvent('speed0');
+        entity.triggerEvent('neutral_off');
         const data = new EntityData();
         data.setTrId(tr.id);
         data.setEntId(entity.id);
