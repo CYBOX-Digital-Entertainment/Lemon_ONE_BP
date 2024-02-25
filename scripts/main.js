@@ -2,7 +2,7 @@ import { EntityInventoryComponent, ItemStack, system, world } from "@minecraft/s
 import "./interact";
 import { readData, saveData } from "./db";
 import { EntityData } from "./class";
-import { loop } from "./function";
+import { getRidingEntity, loop } from "./function";
 let waitingItemStack;
 const initialItems = [
     "cybox:tosca_paint_ddg",
@@ -90,6 +90,18 @@ system.runInterval(() => {
     //         }
     //     })
     // })
+    world.getAllPlayers().forEach(player => {
+        if (getRidingEntity(player)?.typeId === 'cybox:dw_tosca') {
+            if (!player.hasTag('unhittable')) {
+                player.addTag('unhittable');
+            }
+        }
+        else {
+            if (player.hasTag('unhittable')) {
+                player.removeTag('unhittable');
+            }
+        }
+    });
 });
 const discList = [
     '13',
