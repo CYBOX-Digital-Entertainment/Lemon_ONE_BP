@@ -131,6 +131,21 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     [`${isPolice ? `§r사이렌\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '시동 끄기'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`],
                 ]
                 const ui = new ActionFormData().title('차');
+                if(data.enableFriend == undefined) data.enableFriend = false;
+                
+                if(data.enableFriend == true){
+                    buttons.splice(2,4);
+                } else if(data.headLight == true){
+                    buttons.splice(1,1);
+                    buttons.splice(2,3);
+                } else if(data.left_signal == true || data.right_signal == true){
+                    buttons.splice(1,2);
+                    buttons.splice(3,1);
+                } else if(data.window == false){
+                    buttons.splice(1,4);
+                } else if(data?.siren == true){
+                    buttons.splice(1,5)
+                }
 
                 if(data.disc != undefined){
                     buttons.splice(2,0,[`음반 꺼내기`]);
