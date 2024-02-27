@@ -1,4 +1,4 @@
-import { EntityInventoryComponent, EntityMovementComponent, EntityRideableComponent, ItemStack, system, world } from "@minecraft/server";
+import { EntityInventoryComponent, EntityRidingComponent, EntityMovementComponent, EntityRideableComponent, ItemStack, system, world } from "@minecraft/server";
 import { EntityData } from "./class";
 import { readData, saveData } from "./db";
 import { ActionFormData } from "@minecraft/server-ui";
@@ -193,6 +193,9 @@ export function tpTr(data) {
 }
 export function on_off(iv, itemName, index) {
     iv?.container?.setItem(index, new ItemStack(itemName));
+}
+export function getRidingEntity(player) {
+    return player.getComponent(EntityRidingComponent.componentId)?.entityRidingOn;
 }
 export function loop(entity) {
     const data = new EntityData(readData(entity.id));

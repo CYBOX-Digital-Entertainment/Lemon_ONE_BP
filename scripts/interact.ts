@@ -6,6 +6,7 @@ import { ActionFormData } from "@minecraft/server-ui";
 
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     const { itemStack, player, target } = e
+
     // 차량 치장 아이템 사용
     if (itemStack) {
         if (target.typeId === 'cybox:dw_tosca') {
@@ -15,6 +16,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     system.run(() => {
                         target.triggerEvent(KIT_EVENT[itemStack.typeId])
                         player.runCommand(`clear @s ${itemStack.typeId} 0 1`)
+                        world.playSound('dwt_car_spray', player.location)
                     })
                 }
             }
@@ -129,6 +131,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     [`§r속도 증가\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 4 ? '4' : speed.indexOf(data.speed) + 1}`],
                     [`§r속도 감소\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 0 ? '0' : speed.indexOf(data.speed) - 1}`],
                     [`${isPolice ? `§r사이렌\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '시동 끄기'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`],
+                    ['경적', 'textures/items/car_horn']
                 ]
                 const ui = new ActionFormData().title('차');
                 if(data.enableFriend == undefined) data.enableFriend = false;
@@ -330,6 +333,12 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
+                        case '경적': {
+                            world.playSound('dwt_car_horn', target.location, {volume: 10})
+
+                            break;
+                        }
+
                         case '시동 끄기': {
                             const data2 = {
                                 headLight: false, // 헤드라이트
@@ -438,5 +447,3 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         e.cancel = true
     }
 })
-
-
