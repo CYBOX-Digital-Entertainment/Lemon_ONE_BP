@@ -312,3 +312,11 @@ export const KIT_EVENT: KIT_EVENT = {
     'cybox:tosca_paint_wp': 'color_tosca_wp',
     'cybox:tosca_police_kit': 'kit_tosca_police'
 }
+
+export const repairItems = [
+    'minecraft:iron_ingot',
+    'minecraft:gold_ingot',
+    'minecraft:emerald',
+    'minecraft:diamond',
+    'minecraft:netherite_ingot'
+];

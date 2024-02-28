@@ -1,13 +1,12 @@
 import { EntityMovementComponent, system, world } from "@minecraft/server";
 import { readData, saveData } from "./db";
-import { KIT_EVENT, hasKey, openui, openui2 } from "./function";
+import { KIT_EVENT, hasKey, openui, openui2, repairItems } from "./function";
 import { ActionFormData } from "@minecraft/server-ui";
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     const { itemStack, player, target } = e;
-    // 차량 치장 아이템 사용
     if (itemStack) {
         if (target.typeId === 'cybox:dw_tosca') {
-            if (Object.keys(KIT_EVENT).includes(itemStack.typeId)) {
+            if (Object.keys(KIT_EVENT).includes(itemStack.typeId)) { // 차량 치장 아이템 사용
                 e.cancel = true;
                 if (hasKey(player, target)) {
                     system.run(() => {
@@ -16,6 +15,10 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         world.playSound('dwt_car_spray', player.location);
                     });
                 }
+            }
+            else if (repairItems.includes(itemStack.typeId)) {
+                e.cancel = false;
+                return;
             }
         }
     }
