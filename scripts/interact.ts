@@ -392,7 +392,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         case '자동변속기': {
                             const actionform = new ActionFormData().title('자동변속기');
                             const l = ['P','R','N','D'];
-                            l[data.mode] = '§c'+l[data.mode];
+                            l[data.mode] = '§a'+l[data.mode];
                             
                             l.forEach(x=>{
                                 actionform.button(x);
