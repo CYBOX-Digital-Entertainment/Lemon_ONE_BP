@@ -74,13 +74,13 @@ export function openui(player: Player, entityData: EntityData) {
                         saveData(data.entid, data)
                         player.sendMessage(`트렁크가 닫혔습니다.`)
                         entity.triggerEvent("bonnet_close");
-                        world.sendMessage(JSON.stringify(data))
+                        // world.sendMessage(JSON.stringify(data))
                     } else if (result.selection == 0) {
                         data.setTrOpen(false)
                         saveData(data.entid, data)
                         data.setPlid(player.id)
                         data.ride2 = true
-                        world.sendMessage(JSON.stringify(data))
+                        // world.sendMessage(JSON.stringify(data))
                         saveData(data.entid, data)
                         entity.triggerEvent("right_front_door_open")
                     }
@@ -95,12 +95,12 @@ export function openui(player: Player, entityData: EntityData) {
                         data.setTrOpen(true)
                         saveData(data.entid, data)
                         player.sendMessage(`트렁크가 열렸습니다.`)
-                        world.sendMessage(JSON.stringify(data))
+                        // world.sendMessage(JSON.stringify(data))
                         entity.triggerEvent(`bonnet_open`)
                     } else if (result.selection == 0) {
                         data.setPlid(player.id)
                         data.ride2 = true
-                        world.sendMessage(JSON.stringify(data))
+                        // world.sendMessage(JSON.stringify(data))
                         saveData(data.entid, data)
                         entity.triggerEvent("right_front_door_open")
                     }
@@ -131,7 +131,7 @@ export function openui2(player: Player, entityData: EntityData) {
                         saveData(data.entid, data)
                         player.sendMessage(`트렁크가 닫혔습니다.`)
                         entity.triggerEvent("bonnet_close");
-                        world.sendMessage(JSON.stringify(data))
+                        // world.sendMessage(JSON.stringify(data))
                     } else if (res.selection == 0) {
                         const data2 = {
                             headLight: false, // 헤드라이트

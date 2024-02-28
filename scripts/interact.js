@@ -19,9 +19,9 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
             }
         }
     }
-    if (target.typeId != "cybox:dw_tosca" || itemStack?.typeId === "cybox:dw_tosca_spawn_egg" || itemStack?.typeId.startsWith(`cybox:`)) {
-        return;
-    }
+    // if (target.typeId != "cybox:dw_tosca" || itemStack?.typeId === "cybox:dw_tosca_spawn_egg" || itemStack?.typeId.startsWith(`cybox:`)) {
+    //     return;
+    // }
     const rid = target.getComponent(`minecraft:rideable`);
     const entityData = readData(target.id);
     if (itemStack?.typeId != "key:dw_tosca_key" && !entityData.ride2 && player.id !== entityData.plid) {
@@ -29,7 +29,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
             return;
         }
         e.cancel = true;
-        console.warn(`cancel`);
+        // console.warn(`cancel`)
         return;
     }
     else if (itemStack?.typeId != "key:dw_tosca_key" && (!entityData.ride && entityData.ride2 && player.id === entityData.plid)) {
@@ -80,6 +80,21 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
             }
             const speed = [30, 70, 100, 150, 220];
             const data = JSON.parse(world.getDynamicProperty(`car:${target.id}`));
+            // console.warn(itemStack?.typeId,data.credit == undefined);
+            if (itemStack?.typeId == "cybox:dw_tosca_core" && data.credit == undefined) {
+                data.credit = true;
+                world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
+                system.run(() => {
+                    target.triggerEvent('credit');
+                    // console.warn('credit on');
+                });
+                system.runTimeout(() => {
+                    target.triggerEvent(`light_on`);
+                    target.triggerEvent(`sound_off`);
+                    // console.warn('credit off');
+                }, 400);
+                return;
+            }
             system.run(() => {
                 if (itemStack?.typeId.includes('music_disc_')) {
                     const music = itemStack.typeId.replace('minecraft:music_disc_', '');
@@ -118,6 +133,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 const isPolice = target.hasTag("police");
                 const buttons = [
                     ['자동변속기', 'textures/items/at_icon'],
+                    ['경적', 'textures/items/car_horn'],
                     [`다른 플레이어 탑승 ${data.enableFriend ? '차단' : '허용'}`, `textures/items/door_${data.enableFriend ? 'open' : 'close'}`],
                     [`§r헤드라이트 끄기\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`],
                     [`§r좌측 신호등\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`],
@@ -126,27 +142,26 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     [`§r속도 증가\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 4 ? '4' : speed.indexOf(data.speed) + 1}`],
                     [`§r속도 감소\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 0 ? '0' : speed.indexOf(data.speed) - 1}`],
                     [`${isPolice ? `§r사이렌\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '시동 끄기'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`],
-                    ['경적', 'textures/items/car_horn']
                 ];
                 const ui = new ActionFormData().title('차');
                 if (data.enableFriend == undefined)
                     data.enableFriend = false;
                 if (data.enableFriend == true) {
-                    buttons.splice(2, 4);
+                    buttons.splice(3, 4);
                 }
                 else if (data.headLight == true) {
-                    buttons.splice(1, 1);
-                    buttons.splice(2, 3);
+                    buttons.splice(2, 1);
+                    buttons.splice(3, 3);
                 }
                 else if (data.left_signal == true || data.right_signal == true) {
-                    buttons.splice(1, 2);
-                    buttons.splice(3, 1);
+                    buttons.splice(2, 2);
+                    buttons.splice(4, 1);
                 }
                 else if (data.window == false) {
-                    buttons.splice(1, 4);
+                    buttons.splice(2, 4);
                 }
                 else if (data?.siren == true) {
-                    buttons.splice(1, 5);
+                    buttons.splice(2, 5);
                 }
                 if (data.disc != undefined) {
                     buttons.splice(2, 0, [`음반 꺼내기`]);
