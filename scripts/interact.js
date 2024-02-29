@@ -92,6 +92,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     // console.warn('credit on');
                 });
                 system.runTimeout(() => {
+                    target.triggerEvent(`light_on`);
                     target.triggerEvent(`sound_off`);
                     // console.warn('credit off');
                 }, 400);
@@ -103,7 +104,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     if (data.disc != undefined) {
                         player.runCommandAsync(`give @s music_disc_${data.disc}`);
                         rid.getRiders().forEach(entity => {
-                            target.triggerEvent(`sound_off`);
+                            target.triggerEvent(`light_on`);
                             entity.runCommandAsync(`stopsound @s record.${data.disc}`);
                             const k = data.disc;
                             system.runTimeout(() => {
@@ -134,18 +135,18 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 }
                 const isPolice = target.hasTag("police");
                 const buttons = [
-                    [`car.at`, `textures/items/at_icon`],
-                    [`car.horn`, `textures/items/car_horn`],
-                    [`car.door_open_other\n[ ${data.enableFriend ? '§coff§r' : '§aon§r'} ]`, `textures/items/door_${data.enableFriend ? 'open' : 'close'}`],
-                    [`car.headlight\n[ ${data.headLight ? '§aon§r' : '§coff§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`],
-                    [`car.left_turn_signal\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`],
-                    [`car.right_turn_signal\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/right_signal_${data.right_signal ? 'off' : 'on'}`],
-                    [`car.window\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`, `textures/items/roll_${data.window ? 'down' : 'up'}`],
-                    [`car.speedup\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 4 ? '4' : speed.indexOf(data.speed) + 1}`],
-                    [`car.speeddown\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 0 ? '0' : speed.indexOf(data.speed) - 1}`],
-                    [`${isPolice ? `car.siren\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : 'car.off'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`],
+                    [`§rAutomatic Transmission`, `textures/items/at_icon`],
+                    [`§rHorn`, `textures/items/car_horn`],
+                    [`§rRide Another layer\n[ ${data.enableFriend ? '§coff§r' : '§aon§r'} ]`, `textures/items/door_${data.enableFriend ? 'open' : 'close'}`],
+                    [`§rHeadlamp\n[ ${data.headLight ? '§aon§r' : '§coff§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`],
+                    [`§rLeft Turn Signal Lamp\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`],
+                    [`§rRight ft Turn Signal Lamp\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/right_signal_${data.right_signal ? 'off' : 'on'}`],
+                    [`§rThe driver's window\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`, `textures/items/roll_${data.window ? 'down' : 'up'}`],
+                    [`§rSpeed up\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 4 ? '4' : speed.indexOf(data.speed) + 1}`],
+                    [`§rSpeed Slow down\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 0 ? '0' : speed.indexOf(data.speed) - 1}`],
+                    [`${isPolice ? `§rSiren\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '§rExit'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`],
                 ];
-                const ui = new ActionFormData().title('car.ui_title');
+                const ui = new ActionFormData().title('§rLemon ONE - Vehicle System operation');
                 if (data.enableFriend == undefined)
                     data.enableFriend = false;
                 if (data.enableFriend == true) {
@@ -166,10 +167,10 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     buttons.splice(2, 5);
                 }
                 if (data.disc != undefined) {
-                    buttons.splice(2, 0, [`car.cd_eject`, `textures/items/cd_eject`]);
+                    buttons.splice(2, 0, [`§rEject Disk`, `textures/items/cd_eject`]);
                 }
                 if (isPolice) {
-                    buttons.push([`car.off`, `textures/items/car_off`]);
+                    buttons.push([`§rExit`, `textures/items/car_off`]);
                 }
                 buttons.forEach(d => {
                     ui.button(d[0], d[1]);
@@ -183,7 +184,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     }
                     // console.warn(response.selection);
                     switch (buttons[response.selection][0]) {
-                        case `car.door_open_other\n[ ${data.enableFriend ? '§coff§r' : '§aon§r'} ]`: {
+                        case `§rRide Another layer`: {
                             target.triggerEvent(data.enableFriend ? 'door_close' : 'door_open');
                             data.enableFriend = !data.enableFriend;
                             entityData.enableFriend = data.enableFriend;
@@ -191,7 +192,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             saveData(target.id, entityData);
                             break;
                         }
-                        case `car.headlight\n[ ${data.headLight ? '§aon§r' : '§coff§r'} ]`: {
+                        case `§rHeadlamp\n[ ${data.headLight ? '§aon§r' : '§coff§r'} ]`: {
                             if (data.headLight === true) {
                                 target.triggerEvent("light_on");
                                 data.headLight = false;
@@ -209,7 +210,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             }
                             break;
                         }
-                        case `car.left_turn_signal\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`: {
+                        case `§rLeft Turn Signal Lamp\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`: {
                             if (data.left_signal === true) {
                                 target.triggerEvent("left_signal_off");
                                 data.left_signal = false;
@@ -226,7 +227,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             }
                             break;
                         }
-                        case `car.right_turn_signal\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`: {
+                        case `§rRight Turn Signal Lamp\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`: {
                             if (data.right_signal === true) {
                                 target.triggerEvent("right_signal_off");
                                 data.right_signal = false;
@@ -243,7 +244,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             }
                             break;
                         }
-                        case `car.window\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`: {
+                        case `§rThe driver's window\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`: {
                             if (data.window === true) {
                                 target.triggerEvent("roll_down");
                                 data.headLight = false;
@@ -260,13 +261,13 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             }
                             break;
                         }
-                        case `car.speedup\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`: {
+                        case `§rSpeed up\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`: {
                             if (data.mode == 0 || data.mode == 1) {
-                                player.sendMessage(`car.at_notice_p_r`);
+                                player.sendMessage(`In automatic transmission P and R mode, the vehicle speed is limited slowly, please change to D mode to adjust the speed.`);
                                 break;
                             }
                             if (speed.indexOf(data.speed) === 4) {
-                                player.sendMessage(`car.speedup_notice_max`);
+                                player.sendMessage(`The current maximum speed.`);
                             }
                             else {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) + 1}`);
@@ -276,9 +277,9 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             }
                             break;
                         }
-                        case `car.speeddown\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`: {
+                        case `§rSpeed Slow down\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`: {
                             if (speed.indexOf(data.speed) === 0) {
-                                player.sendMessage(`car.speeddown_notice_max`);
+                                player.sendMessage(`The current minimum speed.`);
                             }
                             else {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) - 1}`);
@@ -288,7 +289,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             }
                             break;
                         }
-                        case `${isPolice ? `car.siren\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : 'car.off'}`: {
+                        case `${isPolice ? `§rSiren\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '§rExit'}`: {
                             if (isPolice) {
                                 if (data.siren === true) {
                                     target.triggerEvent("siren_off");
@@ -333,11 +334,11 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             }
                             break;
                         }
-                        case `car.horn`: {
+                        case `§rHorn`: {
                             world.playSound('dwt_car_horn', target.location, { volume: 10 });
                             break;
                         }
-                        case `car.off`: {
+                        case `§rExit`: {
                             const data2 = {
                                 headLight: false, // 헤드라이트
                                 left_signal: false, // 좌 신호등
@@ -364,8 +365,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             saveData("car:" + target.id, data2);
                             break;
                         }
-                        case 'car.at': {
-                            const actionform = new ActionFormData().title('car_at');
+                        case '§rAutomatic Transmission': {
+                            const actionform = new ActionFormData().title('§rAutomatic Transmission');
                             const l = ['P', 'R', 'N', 'D'];
                             l[data.mode] = '§c' + l[data.mode];
                             l.forEach(x => {
@@ -399,7 +400,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             });
                             break;
                         }
-                        case 'car.cd_eject': {
+                        case '§rEject Disk': {
                             player.runCommandAsync(`give @s music_disc_${data.disc}`);
                             rid.getRiders().forEach(entity => {
                                 target.triggerEvent(`sound_off`);
@@ -423,8 +424,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
             }
             system.run(() => {
                 new ActionFormData()
-                    .title(`car.ui_title`)
-                    .button(`car.on`, 'textures/items/car_on')
+                    .title(`§rLemon ONE - Vehicle System operation`)
+                    .button(`§rStart`, 'textures/items/car_on')
                     .show(player).then(res => {
                     if (res.canceled)
                         return;
@@ -433,6 +434,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             entityData.option = true;
                             target.triggerEvent("back_mirror_open");
                             target.triggerEvent(`speed0`);
+                            target.triggerEvent('at_p');
                             saveData(target.id, entityData);
                             break;
                         }
