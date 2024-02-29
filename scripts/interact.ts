@@ -143,8 +143,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 }
                 const isPolice = target.hasTag("police");
                 const buttons = [
-                    [`car.at', 'textures/items/at_icon`],
-                    [`car.horn', 'textures/items/car_horn`],
+                    [`car.at`, `textures/items/at_icon`],
+                    [`car.horn`, `textures/items/car_horn`],
                     [`car.door_open_other\n[ ${data.enableFriend ? '§coff§r' : '§aon§r'} ]`, `textures/items/door_${data.enableFriend ? 'open' : 'close'}`],
                     [`car.headlight\n[ ${data.headLight ? '§aon§r' : '§coff§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`],
                     [`car.left_turn_signal\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`],
@@ -176,7 +176,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 }
 
                 if (isPolice) {
-                    buttons.push(['car.off', 'textures/items/car_off'])
+                    buttons.push([`car.off`, `textures/items/car_off`])
                 }
 
                 buttons.forEach(d=>{
@@ -191,7 +191,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     // console.warn(response.selection);
                     
                     switch (buttons[response.selection][0]) {
-                        case `car.door_open_other ${data.enableFriend ? '§coff§r' : '§aon§r'}`: {
+                        case `car.door_open_other\n[ ${data.enableFriend ? '§coff§r' : '§aon§r'} ]`: {
                             target.triggerEvent(data.enableFriend ? 'door_close' : 'door_open');
                             data.enableFriend = !data.enableFriend;
                             entityData.enableFriend = data.enableFriend;
@@ -281,7 +281,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 break;
                             }
                             if (speed.indexOf(data.speed) === 4) {
-                                player.sendMessage(`§4car.speedup_notice_max`)
+                                player.sendMessage(`car.speedup_notice_max`)
                             } else {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) + 1}`)
                                 data.speed = speed[speed.indexOf(data.speed) + 1];
@@ -295,7 +295,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
 
                         case `car.speeddown\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`: {
                             if (speed.indexOf(data.speed) === 0) {
-                                player.sendMessage(`§4speeddown_notice_max`)
+                                player.sendMessage(`car.speeddown_notice_max`)
                             } else {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) - 1}`)
                                 data.speed = speed[speed.indexOf(data.speed) - 1];
@@ -388,7 +388,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
-                        case 'car_at': {
+                        case 'car.at': {
                             const actionform = new ActionFormData().title('car_at');
                             const l = ['P','R','N','D'];
                             l[data.mode] = '§c'+l[data.mode];

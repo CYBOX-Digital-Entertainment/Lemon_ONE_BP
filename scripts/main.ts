@@ -50,7 +50,7 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         data.setEntId(entity.id);
         saveData(entity.id, data);
         waitingItemStack = new ItemStack("key:dw_tosca_key", 1);
-        waitingItemStack.setLore([`car.id : ${entity.id}`]);
+        waitingItemStack.setLore([`등록된 자동차 아이디 : ${entity.id}`]);
 
         truncInvComponent?.container?.setItem(13, waitingItemStack)
 
