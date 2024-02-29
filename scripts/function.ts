@@ -65,7 +65,7 @@ export function openui(player: Player, entityData: EntityData) {
     system.run(() => {
         if (data.tropen) {
             new ActionFormData()
-                .button(`§rcar.bonnet\n[ §ccar.bonnet_close§r ]`, 'textures/items/bonnet_close')
+                .button(`car.bonnet\n[ §ccar.bonnet_close§r ]`, 'textures/items/bonnet_close')
                 .show(player)
                 .then(result => {
                     if (result.selection == 0) {
@@ -77,8 +77,8 @@ export function openui(player: Player, entityData: EntityData) {
                 })
         } else if (!data.tropen) {
             new ActionFormData()
-                .button(`§rcar.door\n[ §acar.door_on§r ]`, 'textures/items/door_on')
-                .button(`§rcar.bonnet\n[ §acar.bonnet_open§r ]`, 'textures/items/bonnet_open')
+                .button(`car.door\n[ §acar.door_on§r ]`, 'textures/items/door_on')
+                .button(`car.bonnet\n[ §acar.bonnet_open§r ]`, 'textures/items/bonnet_open')
                 .show(player)
                 .then(result => {
                     if (result.selection == 1) {
@@ -111,8 +111,8 @@ export function openui2(player: Player, entityData: EntityData) {
     system.run(() => {
         if (data.tropen) {
             new ActionFormData()
-                .button(`§rcar.door\n[ §ccar.door_close§r ]`, 'textures/items/door_off')
-                .button(`§rcar.bonnet\n[ §ccar.bonnet_close§r ]`, 'textures/items/bonnet_close')
+                .button(`car.door\n[ §ccar.door_close§r ]`, 'textures/items/door_off')
+                .button(`car.bonnet\n[ §ccar.bonnet_close§r ]`, 'textures/items/bonnet_close')
                 .show(player)
                 .then(res => {
                     if (res.canceled) return;
@@ -141,7 +141,7 @@ export function openui2(player: Player, entityData: EntityData) {
                 })
         } else if (!data.tropen) {
             new ActionFormData()
-            .button(`§rcar.door\n[ §ccar.door_close§r ]`, 'textures/items/door_off')
+            .button(`car.door\n[ §ccar.door_close§r ]`, 'textures/items/door_off')
                 .show(player)
                 .then(res => {
                     if (res.canceled) return;
