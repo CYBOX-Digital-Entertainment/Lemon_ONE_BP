@@ -43,7 +43,6 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         const tr = entity.dimension.spawnEntity(`addon:tr`, entity.location);
         const truncInvComponent = tr.getComponent(EntityInventoryComponent.componentId);
         initialItems.forEach(initialItem => truncInvComponent?.container?.addItem(new ItemStack(initialItem, 3)));
-        entity.triggerEvent('at_p');
         entity.triggerEvent('speed0');
         entity.triggerEvent('neutral_off');
         const data = new EntityData();
@@ -51,7 +50,7 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         data.setEntId(entity.id);
         saveData(entity.id, data);
         waitingItemStack = new ItemStack("key:dw_tosca_key", 1);
-        waitingItemStack.setLore([`등록된 자동차 아이디 : ${entity.id}`]);
+        waitingItemStack.setLore([`car.id : ${entity.id}`]);
 
         truncInvComponent?.container?.setItem(13, waitingItemStack)
 

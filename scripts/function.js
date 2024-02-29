@@ -13,7 +13,7 @@ function cannotMoveInN(entity) {
     entity.getComponent('movement')?.setCurrentValue(0);
     entity.clearVelocity();
     if (messageCt.has(riders[0]) == false || messageCt.get(riders[0]) <= system.currentTick) {
-        world.getAllPlayers()?.find(p => p.nameTag == riders[0].nameTag)?.sendMessage(`자동변속기 N 모드일때는 차량을 움직일 수 없습니다`);
+        world.getAllPlayers()?.find(p => p.nameTag == riders[0].nameTag)?.sendMessage(`car.at_notice_n`);
         messageCt.set(riders[0], system.currentTick + 10);
     }
     return;
@@ -62,38 +62,26 @@ export function openui(player, entityData) {
     system.run(() => {
         if (data.tropen) {
             new ActionFormData()
-                .button(`차문 열기`, 'textures/items/door_on')
-                .button(`트렁크 닫기`, 'textures/items/bonnet_close')
+                .button(`§rcar.bonnet\n[ §ccar.bonnet_close§r ]`, 'textures/items/bonnet_close')
                 .show(player)
                 .then(result => {
-                if (result.selection == 1) {
+                if (result.selection == 0) {
                     data.setTrOpen(false);
                     saveData(data.entid, data);
-                    player.sendMessage(`트렁크가 닫혔습니다.`);
                     entity.triggerEvent("bonnet_close");
                     // world.sendMessage(JSON.stringify(data))
-                }
-                else if (result.selection == 0) {
-                    data.setTrOpen(false);
-                    saveData(data.entid, data);
-                    data.setPlid(player.id);
-                    data.ride2 = true;
-                    // world.sendMessage(JSON.stringify(data))
-                    saveData(data.entid, data);
-                    entity.triggerEvent("right_front_door_open");
                 }
             });
         }
         else if (!data.tropen) {
             new ActionFormData()
-                .button(`차문 열기`, 'textures/items/door_on')
-                .button(`트렁크 열기`, 'textures/items/bonnet_open')
+                .button(`§rcar.door\n[ §acar.door_on§r ]`, 'textures/items/door_on')
+                .button(`§rcar.bonnet\n[ §acar.bonnet_open§r ]`, 'textures/items/bonnet_open')
                 .show(player)
                 .then(result => {
                 if (result.selection == 1) {
                     data.setTrOpen(true);
                     saveData(data.entid, data);
-                    player.sendMessage(`트렁크가 열렸습니다.`);
                     // world.sendMessage(JSON.stringify(data))
                     entity.triggerEvent(`bonnet_open`);
                 }
@@ -102,6 +90,7 @@ export function openui(player, entityData) {
                     data.ride2 = true;
                     // world.sendMessage(JSON.stringify(data))
                     saveData(data.entid, data);
+                    player.sendMessage(`car.door_open_notice`);
                     entity.triggerEvent("right_front_door_open");
                 }
             });
@@ -118,8 +107,8 @@ export function openui2(player, entityData) {
     system.run(() => {
         if (data.tropen) {
             new ActionFormData()
-                .button(`차문 닫기`, 'textures/items/door_off')
-                .button(`트렁크 닫기`, 'textures/items/bonnet_close')
+                .button(`§rcar.door\n[ §ccar.door_close§r ]`, 'textures/items/door_off')
+                .button(`§rcar.bonnet\n[ §ccar.bonnet_close§r ]`, 'textures/items/bonnet_close')
                 .show(player)
                 .then(res => {
                 if (res.canceled)
@@ -127,7 +116,6 @@ export function openui2(player, entityData) {
                 if (res.selection == 1) {
                     data.setTrOpen(false);
                     saveData(data.entid, data);
-                    player.sendMessage(`트렁크가 닫혔습니다.`);
                     entity.triggerEvent("bonnet_close");
                     // world.sendMessage(JSON.stringify(data))
                 }
@@ -152,7 +140,7 @@ export function openui2(player, entityData) {
         }
         else if (!data.tropen) {
             new ActionFormData()
-                .button(`차문 닫기`, 'textures/items/door_off')
+                .button(`§rcar.door\n[ §ccar.door_close§r ]`, 'textures/items/door_off')
                 .show(player)
                 .then(res => {
                 if (res.canceled)
@@ -233,7 +221,7 @@ export function loop(entity) {
     if (component?.getRiders()[0]?.id !== data.plid && data.ride) {
         const d = JSON.parse(world.getDynamicProperty(`car:${entity.id}`));
         if (d.disc != undefined) {
-            entity.triggerEvent(`light_on`);
+            entity.triggerEvent(`sound_off`);
             entity.dimension.spawnItem(new ItemStack(`minecraft:music_disc_${d.disc}`, 1), entity.location);
         }
         component?.ejectRiders();
