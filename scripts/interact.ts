@@ -1,4 +1,4 @@
-import { EntityMovementComponent, EntityRideableComponent, Player, system, world } from "@minecraft/server";
+import { EntityMovementComponent, EntityRideableComponent, Player, RawMessage, system, world } from "@minecraft/server";
 import { readData, saveData } from "./db"
 import { KIT_EVENT, hasKey, openui, openui2, repairItems } from "./function"
 import { EntityData } from "./class"
@@ -143,17 +143,17 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     return;
                 }
                 const isPolice = target.hasTag("police");
-                const buttons = [
-                    ['자동변속기','textures/items/at_icon'],
-                    ['경적', 'textures/items/car_horn'],
-                    [`다른 플레이어 탑승 ${data.enableFriend ? '차단' : '허용'}`, `textures/items/door_${data.enableFriend ? 'open' : 'close'}`],
-                    [`§r헤드라이트 끄기\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`],
-                    [`§r좌측 신호등\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`],
-                    [`§r우측 신호등\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`, `textures/items/right_signal_${data.right_signal ? 'off' : 'on'}`],
-                    [`§r창문\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`, `textures/items/roll_${data.window ? 'down' : 'up'}`],
-                    [`§r속도 증가\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 4 ? '4' : speed.indexOf(data.speed) + 1}`],
-                    [`§r속도 감소\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`, `textures/items/speed${speed.indexOf(data.speed) === 0 ? '0' : speed.indexOf(data.speed) - 1}`],
-                    [`${isPolice ? `§r사이렌\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '시동 끄기'}`, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`],
+                const buttons: [RawMessage,string][] = [
+                    [{rawtext:[{translate : `car.at`}]},'textures/items/at_icon'],
+                    [{rawtext:[{translate : `car.horn`}]}, 'textures/items/car_horn'],
+                    [{rawtext:[{translate:'car.door_open_other'},{text:` ${data.enableFriend ? '차단' : '허용'}`}]}, `textures/items/door_${data.enableFriend ? 'open' : 'close'}`],
+                    [{rawtext:[{translate:'car.headlight'},{text:`\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`}]}, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`],
+                    [{rawtext:[{translate:'car.left_turn_signal'},{text:`\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`}]}, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`],
+                    [{rawtext:[{translate:'car.right_turn_signal'},{text:`\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`}]}, `textures/items/right_signal_${data.right_signal ? 'off' : 'on'}`],
+                    [{rawtext:[{translate:'car.window'},{text:`\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`}]}, `textures/items/roll_${data.window ? 'down' : 'up'}`],
+                    [{rawtext:[{translate:'car.speedup'},{text:`\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`}]}, `textures/items/speed${speed.indexOf(data.speed) === 4 ? '4' : speed.indexOf(data.speed) + 1}`],
+                    [{rawtext:[{translate:'car.speeddown'},{text:`\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`}]}, `textures/items/speed${speed.indexOf(data.speed) === 0 ? '0' : speed.indexOf(data.speed) - 1}`],
+                    [{rawtext:[{translate:isPolice ? "car.siren" : "car.off"},{text:isPolice ? `\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : ""}]}, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`],
                 ]
                 const ui = new ActionFormData().title('차');
                 if(data.enableFriend == undefined) data.enableFriend = false;
@@ -173,14 +173,15 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 }
 
                 if(data.disc != undefined){
-                    buttons.splice(2,0,[`음반 꺼내기`]);
+                    buttons.splice(2,0,[{rawtext:[{translate:`car.cd_eject`}]},'textures/items/cd_eject']);
                 }
 
                 if (isPolice) {
-                    buttons.push(['시동 끄기', 'textures/items/car_off'])
+                    buttons.push([{rawtext:[{translate:`car.siren`}]}, 'textures/items/car_off'])
                 }
 
                 buttons.forEach(d=>{
+                    if(typeof d[1] != "string") return;
                     ui.button(d[0],d[1]);
                 })
 
@@ -190,9 +191,12 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         return;
                     }
                     // console.warn(response.selection);
-                    
-                    switch (buttons[response.selection][0]) {
-                        case `다른 플레이어 탑승 ${data.enableFriend ? '차단' : '허용'}`: {
+                    if(typeof buttons[response.selection][0] == 'string') return;
+                    console.warn(JSON.stringify(buttons[response.selection][0].rawtext));
+                    const sel = buttons[response.selection][0].rawtext;
+                    if(sel == undefined) return;
+                    switch (sel[0].translate) {
+                        case `car.door_open_other`: {
                             target.triggerEvent(data.enableFriend ? 'door_close' : 'door_open');
                             data.enableFriend = !data.enableFriend;
                             entityData.enableFriend = data.enableFriend;
@@ -203,7 +207,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
-                        case `§r헤드라이트 끄기\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]`: {
+                        case `car.headlight`: {
                             if (data.headLight === true) {
                                 target.triggerEvent("light_on");
                                 data.headLight = false;
@@ -222,7 +226,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
-                        case `§r좌측 신호등\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]`: {
+                        case `car.left_turn_signal`: {
                             if (data.left_signal === true) {
                                 target.triggerEvent("left_signal_off");
                                 data.left_signal = false;
@@ -240,7 +244,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
-                        case `§r우측 신호등\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]`: {
+                        case `car.right_turn_signal`: {
                             if (data.right_signal === true) {
                                 target.triggerEvent("right_signal_off");
                                 data.right_signal = false;
@@ -258,7 +262,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
-                        case `§r창문\n[ ${data.window ? '§aopen§r' : '§cclose§r'} ]`: {
+                        case `car.window`: {
                             if (data.window === true) {
                                 target.triggerEvent("roll_down");
                                 data.headLight = false;
@@ -276,7 +280,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
-                        case `§r속도 증가\n[ ${data.speed}${speed.indexOf(data.speed) === 4 ? '' : ` -> §a${speed[speed.indexOf(data.speed) + 1]}§r`} ]`: {
+                        case `car.speedup`: {
                             if(data.mode == 0 || data.mode == 1) {
                                 player.sendMessage(`자동변속기 P, R 모드에서는 차량 속도가 낮게 제한됩니다.`);
                                 break;
@@ -294,7 +298,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
-                        case `§r속도 감소\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]`: {
+                        case `car.speeddown`: {
                             if (speed.indexOf(data.speed) === 0) {
                                 player.sendMessage(`§4최소 속력입니다.`)
                             } else {
@@ -308,7 +312,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
-                        case `${isPolice ? `§r사이렌\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : '시동 끄기'}`: {
+                        case `${isPolice ? "car.siren" : "car.off"}`: {
                             if (isPolice) {
                                 if (data.siren === true) {
                                     target.triggerEvent("siren_off");
@@ -355,13 +359,13 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
-                        case '경적': {
+                        case 'car.horn': {
                             world.playSound('dwt_car_horn', target.location, {volume: 10})
 
                             break;
                         }
 
-                        case '시동 끄기': {
+                        case 'car.off': {
                             const data2 = {
                                 headLight: false, // 헤드라이트
                                 left_signal: false, // 좌 신호등
@@ -389,7 +393,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
 
-                        case '자동변속기': {
+                        case 'car.at': {
                             const actionform = new ActionFormData().title('자동변속기');
                             const l = ['P','R','N','D'];
                             l[data.mode] = '§a'+l[data.mode];
@@ -421,7 +425,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             });
                             break;
                         }
-                        case '음반 꺼내기':{
+                        case 'car.cd_eject':{
                             player.runCommandAsync(`give @s music_disc_${data.disc}`);
                             rid.getRiders().forEach(entity=>{
                                 target.triggerEvent(`light_on`);
