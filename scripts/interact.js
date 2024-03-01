@@ -271,11 +271,11 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         }
                         case `car.speedup`: {
                             if (data.mode == 0 || data.mode == 1) {
-                                player.sendMessage(`car.at_notice_p_r`);
+                                player.sendMessage({ rawtext: [{ translate: `car.at_notice_p_r` }] });
                                 break;
                             }
                             if (speed.indexOf(data.speed) === 4) {
-                                player.sendMessage(`The current maximum speed.`);
+                                player.sendMessage({ rawtext: [{ translate: `car.speedup_notice_max` }] });
                             }
                             else {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) + 1}`);
@@ -287,7 +287,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         }
                         case `car.speeddown`: {
                             if (speed.indexOf(data.speed) === 0) {
-                                player.sendMessage(`The current minimum speed.`);
+                                player.sendMessage({ rawtext: [{ translate: `car.speeddown_notice_max` }] });
                             }
                             else {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) - 1}`);
@@ -376,7 +376,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         case 'car.at': {
                             const actionform = new ActionFormData().title('car.at');
                             const l = ['P', 'R', 'N', 'D'];
-                            l[data.mode] = '§a' + l[data.mode];
+                            l[data.mode] = '§c' + l[data.mode];
                             l.forEach(x => {
                                 actionform.button(x);
                             });

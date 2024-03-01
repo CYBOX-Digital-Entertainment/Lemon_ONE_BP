@@ -13,7 +13,7 @@ function cannotMoveInN(entity) {
     entity.getComponent('movement')?.setCurrentValue(0);
     entity.clearVelocity();
     if (messageCt.has(riders[0]) == false || messageCt.get(riders[0]) <= system.currentTick) {
-        world.getAllPlayers()?.find(p => p.nameTag == riders[0].nameTag)?.sendMessage(`car.at_notice_n`);
+        world.getAllPlayers()?.find(p => p.nameTag == riders[0].nameTag)?.sendMessage({ rawtext: [{ translate: `car.at_notice_n` }] });
         messageCt.set(riders[0], system.currentTick + 10);
     }
     return;
