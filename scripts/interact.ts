@@ -115,7 +115,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     if(data.disc != undefined){
                         player.runCommandAsync(`give @s music_disc_${data.disc}`);
                         rid.getRiders().forEach(entity=>{
-                            target.triggerEvent(`light_on`);
+                            target.triggerEvent(`sound_off`);
                             entity.runCommandAsync(`stopsound @s record.${data.disc}`);
                             const k = data.disc;
                             system.runTimeout(()=>{
@@ -286,7 +286,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 break;
                             }
                             if (speed.indexOf(data.speed) === 4) {
-                                player.sendMessage(`§4최대 속력입니다.`)
+                                player.sendMessage(`The current maximum speed.`)
                             } else {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) + 1}`)
                                 data.speed = speed[speed.indexOf(data.speed) + 1];
@@ -300,7 +300,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
 
                         case `car.speeddown`: {
                             if (speed.indexOf(data.speed) === 0) {
-                                player.sendMessage(`§4최소 속력입니다.`)
+                                player.sendMessage(`The current minimum speed.`)
                             } else {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) - 1}`)
                                 data.speed = speed[speed.indexOf(data.speed) - 1];
@@ -446,8 +446,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
             if(!hasKey(player, target)){ return; }
             system.run(() => {
                 new ActionFormData()
-                    .title(`차`)
-                    .button(`시동 켜기`, 'textures/items/car_on')
+                    .title(`§rLemon ONE - Vehicle System operation`)
+                    .button(`§rStart`, 'textures/items/car_on')
                     .show(player).then(res => {
                         if (res.canceled) return;
 
