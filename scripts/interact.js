@@ -137,7 +137,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 const buttons = [
                     [{ rawtext: [{ translate: `car.at` }] }, 'textures/items/at_icon'],
                     [{ rawtext: [{ translate: `car.horn` }] }, 'textures/items/car_horn'],
-                    [{ rawtext: [{ translate: 'car.door_open_other' }, { text: ` ${data.enableFriend ? '차단' : '허용'}` }] }, `textures/items/door_${data.enableFriend ? 'open' : 'close'}`],
+                    [{ rawtext: [{ translate: 'car.door_open_other' }, { text: `\n[ ${data.enableFriend ? '§coff§r' : '§aon§r'} ]` }] }, `textures/items/door_${data.enableFriend ? 'open' : 'close'}`],
                     [{ rawtext: [{ translate: 'car.headlight' }, { text: `\n[ ${data.headLight ? '§coff§r' : '§aon§r'} ]` }] }, `textures/items/headlight_${data.headLight ? 'off' : 'on'}`],
                     [{ rawtext: [{ translate: 'car.left_turn_signal' }, { text: `\n[ ${data.left_signal ? '§coff§r' : '§aon§r'} ]` }] }, `textures/items/left_signal_${data.left_signal ? 'off' : 'on'}`],
                     [{ rawtext: [{ translate: 'car.right_turn_signal' }, { text: `\n[ ${data.right_signal ? '§coff§r' : '§aon§r'} ]` }] }, `textures/items/right_signal_${data.right_signal ? 'off' : 'on'}`],
@@ -146,7 +146,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     [{ rawtext: [{ translate: 'car.speeddown' }, { text: `\n[ ${data.speed}${speed.indexOf(data.speed) === 0 ? '' : ` -> §c${speed[speed.indexOf(data.speed) - 1]}§r`} ]` }] }, `textures/items/speed${speed.indexOf(data.speed) === 0 ? '0' : speed.indexOf(data.speed) - 1}`],
                     [{ rawtext: [{ translate: isPolice ? "car.siren" : "car.off" }, { text: isPolice ? `\n[ ${data.siren ? '§coff§r' : '§aon§r'} ]` : "" }] }, `textures/items/${isPolice ? `siren_${data.siren ? 'off' : 'on'}` : 'car_off'}`],
                 ];
-                const ui = new ActionFormData().title('차');
+                const ui = new ActionFormData().title('car.ui_title');
                 if (data.enableFriend == undefined)
                     data.enableFriend = false;
                 if (data.enableFriend == true) {
@@ -271,7 +271,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         }
                         case `car.speedup`: {
                             if (data.mode == 0 || data.mode == 1) {
-                                player.sendMessage(`자동변속기 P, R 모드에서는 차량 속도가 낮게 제한됩니다.`);
+                                player.sendMessage(`car.at_notice_p_r`);
                                 break;
                             }
                             if (speed.indexOf(data.speed) === 4) {
@@ -374,7 +374,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             break;
                         }
                         case 'car.at': {
-                            const actionform = new ActionFormData().title('자동변속기');
+                            const actionform = new ActionFormData().title('car.at');
                             const l = ['P', 'R', 'N', 'D'];
                             l[data.mode] = '§a' + l[data.mode];
                             l.forEach(x => {
@@ -432,8 +432,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
             }
             system.run(() => {
                 new ActionFormData()
-                    .title(`§rLemon ONE - Vehicle System operation`)
-                    .button(`§rStart`, 'textures/items/car_on')
+                    .title(`car.ui_title`)
+                    .button(`car.on`, 'textures/items/car_on')
                     .show(player).then(res => {
                     if (res.canceled)
                         return;

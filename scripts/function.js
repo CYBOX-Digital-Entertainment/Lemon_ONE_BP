@@ -13,7 +13,7 @@ function cannotMoveInN(entity) {
     entity.getComponent('movement')?.setCurrentValue(0);
     entity.clearVelocity();
     if (messageCt.has(riders[0]) == false || messageCt.get(riders[0]) <= system.currentTick) {
-        world.getAllPlayers()?.find(p => p.nameTag == riders[0].nameTag)?.sendMessage(`In automatic transmission N mode, The vehicle cannot be moved. Please change to another mode to move the vehicle.`);
+        world.getAllPlayers()?.find(p => p.nameTag == riders[0].nameTag)?.sendMessage(`car.at_notice_n`);
         messageCt.set(riders[0], system.currentTick + 10);
     }
     return;
@@ -62,7 +62,7 @@ export function openui(player, entityData) {
     system.run(() => {
         if (data.tropen) {
             new ActionFormData()
-                .button(`§rTrunk&Boot\n[ §cclose§r ]`, 'textures/items/bonnet_close')
+                .button({ rawtext: [{ translate: `car.bonnet_close` }] }, 'textures/items/bonnet_close')
                 .show(player)
                 .then(result => {
                 if (result.selection == 0) {
@@ -75,8 +75,8 @@ export function openui(player, entityData) {
         }
         else if (!data.tropen) {
             new ActionFormData()
-                .button(`§rThe Driver's Door\n[ §aopen§r ]`, 'textures/items/door_on')
-                .button(`§rTrunk&Boot\n[ §aopen§r ]`, 'textures/items/bonnet_open')
+                .button({ rawtext: [{ translate: `car.door_open` }] }, 'textures/items/door_on')
+                .button({ rawtext: [{ translate: `car.bonnet_open` }] }, 'textures/items/bonnet_open')
                 .show(player)
                 .then(result => {
                 if (result.selection == 1) {
@@ -90,7 +90,7 @@ export function openui(player, entityData) {
                     data.ride2 = true;
                     // world.sendMessage(JSON.stringify(data))
                     saveData(data.entid, data);
-                    player.sendMessage(`Please do not hold the key for a while when you get in the vehicle.`);
+                    player.sendMessage({ rawtext: [{ translate: `car.door_open_notice` }] });
                     entity.triggerEvent("right_front_door_open");
                 }
             });
@@ -107,8 +107,8 @@ export function openui2(player, entityData) {
     system.run(() => {
         if (data.tropen) {
             new ActionFormData()
-                .button(`§rThe Driver's Door\n[ §cclose§r ]`, 'textures/items/door_off')
-                .button(`§rTrunk&Boot\n[ §cclose§r ]`, 'textures/items/bonnet_close')
+                .button({ rawtext: [{ translate: `car.door_close` }] }, 'textures/items/door_off')
+                .button({ rawtext: [{ translate: `car.bonnet_close` }] }, 'textures/items/bonnet_close')
                 .show(player)
                 .then(res => {
                 if (res.canceled)
@@ -140,7 +140,7 @@ export function openui2(player, entityData) {
         }
         else if (!data.tropen) {
             new ActionFormData()
-                .button(`§rThe Driver's Door\n[ §cclose§r ]`, 'textures/items/door_off')
+                .button({ rawtext: [{ translate: `car.door_close` }] }, 'textures/items/door_off')
                 .show(player)
                 .then(res => {
                 if (res.canceled)
