@@ -2,10 +2,11 @@ import { EntityMovementComponent, system, world } from "@minecraft/server";
 import { readData, saveData } from "./db";
 import { KIT_EVENT, hasKey, openui, openui2, repairItems } from "./function";
 import { ActionFormData } from "@minecraft/server-ui";
+import { carInfoObj, carNameList } from "./settings";
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     const { itemStack, player, target } = e;
     if (itemStack) {
-        if (target.typeId === 'cybox:dw_tosca') {
+        if (carNameList().includes(target.typeId)) {
             if (Object.keys(KIT_EVENT).includes(itemStack.typeId)) { // 차량 치장 아이템 사용
                 e.cancel = true;
                 if (hasKey(player, target)) {
@@ -27,15 +28,15 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     // }
     const rid = target.getComponent(`minecraft:rideable`);
     const entityData = readData(target.id);
-    if (itemStack?.typeId != "key:dw_tosca_key" && !entityData.ride2 && player.id !== entityData.plid) {
+    const carInfo = carInfoObj[target.typeId];
+    if (carInfo.key != itemStack?.typeId&& !entityData.ride2 && player.id !== entityData.plid) {
         if (rid.getRiders().length && entityData.enableFriend) {
             return;
         }
         e.cancel = true;
         // console.warn(`cancel`)
         return;
-    }
-    else if (itemStack?.typeId != "key:dw_tosca_key" && (!entityData.ride && entityData.ride2 && player.id === entityData.plid)) {
+    } else if (carInfo.key != itemStack?.typeId && (!entityData.ride && entityData.ride2 && player.id === entityData.plid)) {
         entityData.ride = true;
         entityData.ride2 = false;
         system.run(() => {
@@ -46,7 +47,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
         saveData(target.id, entityData);
         return;
     }
-    if (itemStack?.typeId == "key:dw_tosca_key" && entityData.ride2 && !entityData.ride && entityData.plid === player.id) {
+    if (carInfo.key != itemStack?.typeId && entityData.ride2 && !entityData.ride && entityData.plid === player.id) {
         e.cancel = true;
         openui2(player, entityData);
         return;
@@ -84,7 +85,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
             const speed = [30, 70, 100, 150, 220];
             const data = JSON.parse(world.getDynamicProperty(`car:${target.id}`));
             // console.warn(itemStack?.typeId,data.credit == undefined);
-            if (itemStack?.typeId == "cybox:dw_tosca_core" && data.credit == undefined) {
+            if (carInfo.esterEgg != undefined &&itemStack?.typeId == carInfo.esterEgg && data.credit == undefined) {
                 data.credit = true;
                 world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                 system.run(() => {
@@ -450,7 +451,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
             });
         }
     }
-    else if (itemStack?.typeId == "key:dw_tosca_key" && itemStack?.getLore()[0]?.slice(14) == target.id) {
+    else if (itemStack?.typeId == carInfo.key && itemStack?.getLore()[0]?.slice(14) == target.id) {
         e.cancel = true;
         openui(player, entityData);
     }

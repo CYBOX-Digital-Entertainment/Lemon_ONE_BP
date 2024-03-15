@@ -2,6 +2,8 @@ import { EntityInventoryComponent, EntityRidingComponent, EntityMovementComponen
 import { EntityData } from "./class";
 import { readData, saveData } from "./db";
 import { ActionFormData } from "@minecraft/server-ui";
+import { carInfoObj, carNameList } from "./settings";
+
 const messageCt = new Map();
 function cannotMoveInN(entity) {
     const riders = entity.getComponent('rideable')?.getRiders();
@@ -19,7 +21,7 @@ function cannotMoveInN(entity) {
     return;
 }
 function getCar(player) {
-    const cars = player.dimension.getEntities({ type: "cybox:dw_tosca" });
+    const cars = player.dimension.getEntities().filter(x=> carNameList().includes(x.typeId))
     for (const car of cars) {
         let rideable = car.getComponent(EntityRideableComponent.componentId);
         if (rideable?.getRiders()[0].id === player.id) {
@@ -43,7 +45,8 @@ export function hasKey(player, car) {
         return false;
     for (let i = 0; i < inventory?.inventorySize; i++) {
         const item = inventory.container?.getItem(i);
-        if (item?.typeId === "key:dw_tosca_key" && item?.getLore()[0]?.slice(14) == car.id) {
+        const carInfo = carInfoObj[car.typeId];
+        if (item?.typeId === carInfo.key && item?.getLore()[0]?.slice(14) == car.id) {
             return true;
         }
     }
@@ -188,8 +191,8 @@ export function getRidingEntity(player) {
 export function loop(entity) {
     const data = new EntityData(readData(entity.id));
     const cardata = readData("car:" + entity.id);
-    const score = world.scoreboard.getObjective("spd").getScore(entity)
-    entity.getComponent("movement").setCurrentValue(score * 0.005)
+    let score = world.scoreboard.getObjective("spd")?.getScore(entity);
+    if(isNaN(score) == false) entity.getComponent("movement").setCurrentValue(score * 0.005)
     if (cardata?.headLight === false && data.option === true) {
         entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
         entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level"=15]`);

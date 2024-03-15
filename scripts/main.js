@@ -3,6 +3,7 @@ import "./interact";
 import { readData, saveData } from "./db";
 import { EntityData } from "./class";
 import { getRidingEntity, loop } from "./function";
+import { carNameList, carInfoObj } from "./settings";
 let waitingItemStack;
 const initialItems = [
     "cybox:tosca_paint_ddg",
@@ -26,7 +27,7 @@ world.afterEvents.itemUseOn.subscribe(({ source, itemStack }) => {
 //차량 엔티티가 파괴될 때 트렁크 삭제 및 데이터 삭제
 world.afterEvents.entityDie.subscribe(res => {
     const entity = res.deadEntity;
-    if (entity.typeId == "cybox:dw_tosca") {
+    if (carNameList().includes(entity.typeId)) {
         const data = readData(entity.id);
         world.getEntity(data.trid)?.kill();
         saveData(entity.id, undefined);
@@ -35,7 +36,8 @@ world.afterEvents.entityDie.subscribe(res => {
 });
 //자동차 스폰시 기본 설정
 world.afterEvents.entitySpawn.subscribe(({ entity }) => {
-    if (readData(entity.id) === undefined && entity.typeId == "cybox:dw_tosca") {
+    if (readData(entity.id) === undefined && carNameList().includes(entity.typeId)) {
+        const carInfo = carInfoObj[entity.typeId];
         const tr = entity.dimension.spawnEntity(`addon:tr`, entity.location);
         const truncInvComponent = tr.getComponent(EntityInventoryComponent.componentId);
         initialItems.forEach(initialItem => truncInvComponent?.container?.addItem(new ItemStack(initialItem, 3)));
@@ -45,7 +47,7 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         data.setTrId(tr.id);
         data.setEntId(entity.id);
         saveData(entity.id, data);
-        waitingItemStack = new ItemStack("key:dw_tosca_key", 1);
+        waitingItemStack = new ItemStack(carInfo.key, 1);
         waitingItemStack.setLore([`등록된 자동차 아이디 : ${entity.id}`]);
         truncInvComponent?.container?.setItem(13, waitingItemStack);
         world.setDynamicProperty(`car:${entity.id}`, JSON.stringify({
@@ -64,9 +66,7 @@ let rider = [];
 system.runInterval(() => {
     const list = [];
     worlds.forEach(dimension => {
-        dimension.getEntities({
-            type: "cybox:dw_tosca"
-        }).forEach(f => {
+        dimension.getEntities().filter(x=> carNameList().includes(x.typeId)).forEach(f => {
             loop(f);
             f.getComponent('rideable')?.getRiders().forEach(x => {
                 if (list.includes(x.id) == false)
@@ -90,7 +90,7 @@ system.runInterval(() => {
     //     })
     // })
     world.getAllPlayers().forEach(player => {
-        if (getRidingEntity(player)?.typeId === 'cybox:dw_tosca') {
+        if (carNameList().includes(getRidingEntity(player)?.typeId)) {
             if (!player.hasTag('unhittable')) {
                 player.addTag('unhittable');
             }
