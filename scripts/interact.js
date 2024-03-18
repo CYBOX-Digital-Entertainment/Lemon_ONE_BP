@@ -181,6 +181,10 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 if (!hasKey(player, target)) {
                     return;
                 } // 키 소지
+                const setSpeed = (sp) => {
+                    let speeds = [50, 75, 100, 147, 200]
+                    world.scoreboard.getObjective("spdg").setScore(target, speeds[speed.indexOf(sp)])
+                }
                 ui.show(player).then(response => {
                     if (response.canceled || response.selection == undefined) {
                         return;
@@ -279,8 +283,10 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 player.sendMessage({ rawtext: [{ translate: `car.speedup_notice_max` }] });
                             }
                             else {
+                                
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) + 1}`);
                                 data.speed = speed[speed.indexOf(data.speed) + 1];
+                                setSpeed(data.speed)
                                 world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 target.playAnimation(`animation.tosca.dummy${speed.indexOf(data.speed)}`);
                             }
@@ -293,6 +299,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             else {
                                 target.triggerEvent(`speed${speed.indexOf(data.speed) - 1}`);
                                 data.speed = speed[speed.indexOf(data.speed) - 1];
+                                setSpeed(data.speed)
                                 world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                                 target.playAnimation(`animation.tosca.dummy${speed.indexOf(data.speed)}`);
                             }

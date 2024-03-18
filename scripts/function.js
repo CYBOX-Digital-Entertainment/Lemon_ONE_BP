@@ -191,8 +191,8 @@ export function getRidingEntity(player) {
 export function loop(entity) {
     const data = new EntityData(readData(entity.id));
     const cardata = readData("car:" + entity.id);
-    // let score = world.scoreboard.getObjective("spd")?.getScore(entity);
-    // if(isNaN(score) == false) entity.getComponent("movement").setCurrentValue(score * 0.005)
+    let score = world.scoreboard.getObjective("spd")?.getScore(entity);
+    if(isNaN(score) == false) entity.getComponent("movement").setCurrentValue(score * 0.005)
     if (cardata?.headLight === false && data.option === true) {
         entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);
         entity.runCommandAsync(`setblock ~~~ light_block ["block_light_level"=15]`);
