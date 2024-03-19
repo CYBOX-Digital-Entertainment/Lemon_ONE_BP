@@ -29,7 +29,9 @@ world.afterEvents.entityDie.subscribe(res => {
     const entity = res.deadEntity;
     if (carNameList().includes(entity.typeId)) {
         const data = readData(entity.id);
-        world.getEntity(data.trid)?.kill();
+        const tr = world.getEntity(data.trid);
+        tr?.teleport(entity.location);
+        tr?.kill();
         saveData(entity.id, undefined);
         saveData(`car:${entity.id}`, undefined);
     }
@@ -66,7 +68,7 @@ let rider = [];
 system.runInterval(() => {
     const list = [];
     worlds.forEach(dimension => {
-        dimension.getEntities().filter(x=> carNameList().includes(x.typeId)).forEach(f => {
+        dimension.getEntities().filter(x => carNameList().includes(x.typeId)).forEach(f => {
             loop(f);
             f.getComponent('rideable')?.getRiders().forEach(x => {
                 if (list.includes(x.id) == false)
