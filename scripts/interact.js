@@ -3,6 +3,8 @@ import { readData, saveData } from "./db";
 import { KIT_EVENT, hasKey, openui, openui2, repairItems } from "./function";
 import { ActionFormData } from "@minecraft/server-ui";
 import { carInfoObj, carNameList } from "./settings";
+
+
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     const { itemStack, player, target } = e;
     if (itemStack) {

@@ -1,4 +1,4 @@
-import { EntityInventoryComponent, EntityRidingComponent, EntityMovementComponent, EntityRideableComponent, ItemStack, system, world } from "@minecraft/server";
+import { EntityInventoryComponent, EntityRidingComponent, EntityMovementComponent, EntityRideableComponent, ItemStack, system, world, Entity } from "@minecraft/server";
 import { EntityData } from "./class";
 import { readData, saveData } from "./db";
 import { ActionFormData } from "@minecraft/server-ui";
@@ -191,7 +191,11 @@ export function getRidingEntity(player) {
 export function loop(entity) {
     const data = new EntityData(readData(entity.id));
     const cardata = readData("car:" + entity.id);
-    let score = world.scoreboard.getObjective("spd")?.getScore(entity);
+    const scoreboardSpd = world.scoreboard.getObjective("spd")
+    if (!entity.scoreboardIdentity) {
+        scoreboardSpd.setScore(entity, 0)
+    }
+    let score = scoreboardSpd?.getScore(entity);
     if(isNaN(score) == false) entity.getComponent("movement").setCurrentValue(score * 0.005)
     if (cardata?.headLight === false && data.option === true) {
         entity.runCommandAsync(`fill ~3 ~3 ~3 ~-3 ~-3 ~-3 air replace light_block`);

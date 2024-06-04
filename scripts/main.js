@@ -6,16 +6,16 @@ import { getRidingEntity, loop } from "./function";
 import { carNameList, carInfoObj } from "./settings";
 let waitingItemStack;
 const initialItems = [
-    "cybox:tosca_paint_ddg",
-    "cybox:tosca_paint_gb",
-    "cybox:tosca_paint_gw",
-    "cybox:tosca_paint_kr",
-    "cybox:tosca_paint_og",
-    "cybox:tosca_paint_pb",
-    "cybox:tosca_paint_ps",
-    "cybox:tosca_paint_sdg",
-    "cybox:tosca_paint_wp",
-    "cybox:tosca_police_kit",
+    // "cybox:tosca_paint_ddg",
+    // "cybox:tosca_paint_gb",
+    // "cybox:tosca_paint_gw",
+    // "cybox:tosca_paint_kr",
+    // "cybox:tosca_paint_og",
+    // "cybox:tosca_paint_pb",
+    // "cybox:tosca_paint_ps",
+    // "cybox:tosca_paint_sdg",
+    // "cybox:tosca_paint_wp",
+    // "cybox:tosca_police_kit",
 ];
 world.afterEvents.itemUseOn.subscribe(({ source, itemStack }) => {
     if (itemStack.typeId === "cybox:dw_tosca_spawn_egg") {
@@ -24,6 +24,7 @@ world.afterEvents.itemUseOn.subscribe(({ source, itemStack }) => {
             ?.addItem(waitingItemStack);
     }
 });
+
 //차량 엔티티가 파괴될 때 트렁크 삭제 및 데이터 삭제
 world.afterEvents.entityDie.subscribe(res => {
     const entity = res.deadEntity;
@@ -36,6 +37,7 @@ world.afterEvents.entityDie.subscribe(res => {
         saveData(`car:${entity.id}`, undefined);
     }
 });
+
 //자동차 스폰시 기본 설정
 world.afterEvents.entitySpawn.subscribe(({ entity }) => {
     if (readData(entity.id) === undefined && carNameList().includes(entity.typeId)) {
@@ -63,6 +65,7 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
         }));
     }
 });
+
 const worlds = [world.getDimension(`overworld`), world.getDimension(`the_end`), world.getDimension(`nether`)];
 let rider = [];
 system.runInterval(() => {
