@@ -7,7 +7,6 @@ world.beforeEvents.itemUse.subscribe(({ source, itemStack, cancel }) => {
         if (itemStack.typeId.startsWith(`addon:`)) {
             cancel = true;
         }
-        console.warn(itemStack.typeId);
         switch (itemStack.typeId) {
             case "addon:headlight_off": {
                 playAni(source, "light_off");

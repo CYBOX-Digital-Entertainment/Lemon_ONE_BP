@@ -31,10 +31,9 @@ export class EntityData {
         return this;
     }
     trunk() {
-        console.warn(this.trid)
-        //return world.getEntity(this.trid);
+        return world.getEntity(this.trid);
     }
     entity() {
-        //return world.getEntity(this.entid);
+        return world.getEntity(this.entid);
     }
 }

@@ -36,7 +36,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
             return;
         }
         e.cancel = true;
-        // console.warn(`cancel`)
         return;
     } else if (carInfo.key != itemStack?.typeId && (!entityData.ride && entityData.ride2 && player.id === entityData.plid)) {
         entityData.ride = true;
@@ -86,18 +85,15 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
             }
             const speed = [30, 70, 100, 150, 220];
             const data = JSON.parse(world.getDynamicProperty(`car:${target.id}`));
-            // console.warn(itemStack?.typeId,data.credit == undefined);
             if (carInfo.esterEgg != undefined &&itemStack?.typeId == carInfo.esterEgg && data.credit == undefined) {
                 data.credit = true;
                 world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
                 system.run(() => {
                     target.triggerEvent('credit');
-                    // console.warn('credit on');
                 });
                 system.runTimeout(() => {
                     target.triggerEvent(`light_on`);
                     target.triggerEvent(`sound_off`);
-                    // console.warn('credit off');
                 }, 400);
                 return;
             }
@@ -191,10 +187,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     if (response.canceled || response.selection == undefined) {
                         return;
                     }
-                    // console.warn(response.selection);
                     if (typeof buttons[response.selection][0] == 'string')
                         return;
-                    console.warn(JSON.stringify(buttons[response.selection][0].rawtext));
                     const sel = buttons[response.selection][0].rawtext;
                     if (sel == undefined)
                         return;
