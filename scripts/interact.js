@@ -3,7 +3,18 @@ import { readData, saveData } from "./db";
 import { KIT_EVENT, hasKey, openui, openui2, repairItems } from "./function";
 import { ActionFormData } from "@minecraft/server-ui";
 import { carInfoObj, carNameList } from "./settings";
+import { EntityData } from "./class";
 
+function getOriginEntity(trid){
+    for(let id of world.getDynamicPropertyIds()){
+        const data = JSON.parse(world.getDynamicProperty(id));
+        
+        if(data == undefined) continue;
+        console.warn(data.trid == trid);
+        
+        if(data.trid == trid) return world.getEntity(data.entid)
+    }
+}
 
 world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     const { itemStack, player, target } = e;
@@ -30,8 +41,20 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
     // }
     const rid = target.getComponent(`minecraft:rideable`);
     const entityData = readData(target.id);
-    const carInfo = carInfoObj[target.typeId];
-    if (carInfo.key != itemStack?.typeId&& !entityData.ride2 && player.id !== entityData.plid) {
+    let entity;
+    if(entityData == undefined){
+        entity = getOriginEntity(target.id);
+    } else {
+        entity = world.getEntity(entityData.entid);
+    }
+    console.warn(JSON.stringify(entityData));
+    
+    
+    // const car = getOriginEntityTypeIdFromTr(target.typeId);
+    // console.warn(JSON.stringify(car));
+    const carInfo = carInfoObj[entity.typeId];
+    
+    if (carInfo.key != itemStack?.typeId&& !entityData?.ride2 && player.id !== entityData?.plid) {
         if (rid.getRiders().length && entityData.enableFriend) {
             return;
         }
@@ -169,7 +192,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     buttons.splice(2, 0, [{ rawtext: [{ translate: `car.cd_eject` }] }, 'textures/items/cd_eject']);
                 }
                 if (isPolice) {
-                    buttons.push([{ rawtext: [{ translate: `car.siren` }] }, 'textures/items/car_off']);
+                    buttons.push([{ rawtext: [{ translate: `car.off` }] }, 'textures/items/car_off']);
                 }
                 buttons.forEach(d => {
                     if (typeof d[1] != "string")
@@ -181,8 +204,10 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                 } // 키 소지
                 const setSpeed = (sp) => {
                     let speeds = [50, 75, 100, 147, 200]
-                    world.scoreboard.getObjective("spdg").setScore(target, speeds[speed.indexOf(sp)])
+                    entity.getComponent("movement").setCurrentValue(speeds[speed.indexOf(sp)] * 0.005)
+                    console.warn(speeds[speed.indexOf(sp)] * 0.005);
                 }
+                
                 ui.show(player).then(response => {
                     if (response.canceled || response.selection == undefined) {
                         return;
@@ -399,6 +424,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                     target.triggerEvent('speed0');
                                     target.triggerEvent('neutral_off');
                                     target.triggerEvent(`speed0`);
+                                    setSpeed(data.speed);
                                 }
                                 else if (res.selection == 2) {
                                     target.triggerEvent('neutral_on');
@@ -407,6 +433,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 else if (res.selection == 3) {
                                     target.triggerEvent('at_d');
                                     target.triggerEvent(`speed0`);
+                                    setSpeed(data.speed);
                                 }
                                 saveData("car:" + target.id, data);
                             });
@@ -445,7 +472,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                         case 0: {
                             entityData.option = true;
                             target.triggerEvent("back_mirror_open");
-                            target.triggerEvent(`speed0`);
                             saveData(target.id, entityData);
                             break;
                         }

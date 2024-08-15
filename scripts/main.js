@@ -6,16 +6,16 @@ import { getRidingEntity, loop } from "./function";
 import { carNameList, carInfoObj } from "./settings";
 let waitingItemStack;
 const initialItems = [
-    // "cybox:tosca_paint_ddg",
-    // "cybox:tosca_paint_gb",
-    // "cybox:tosca_paint_gw",
-    // "cybox:tosca_paint_kr",
-    // "cybox:tosca_paint_og",
-    // "cybox:tosca_paint_pb",
-    // "cybox:tosca_paint_ps",
-    // "cybox:tosca_paint_sdg",
-    // "cybox:tosca_paint_wp",
-    // "cybox:tosca_police_kit",
+    "cybox:tosca_paint_ddg",
+    "cybox:tosca_paint_gb",
+    "cybox:tosca_paint_gw",
+    "cybox:tosca_paint_kr",
+    "cybox:tosca_paint_og",
+    "cybox:tosca_paint_pb",
+    "cybox:tosca_paint_ps",
+    "cybox:tosca_paint_sdg",
+    "cybox:tosca_paint_wp",
+    "cybox:tosca_police_kit",
 ];
 world.afterEvents.itemUseOn.subscribe(({ source, itemStack }) => {
     if (itemStack.typeId === "cybox:dw_tosca_spawn_egg") {
