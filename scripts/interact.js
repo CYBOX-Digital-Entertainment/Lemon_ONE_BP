@@ -137,7 +137,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                     }
                     data.disc = music;
                     world.setDynamicProperty(`car:${target.id}`, JSON.stringify(data));
-                    player.getComponent(`inventory`)?.container?.setItem(player.selectedSlot);
+                    player.getComponent(`inventory`)?.container?.setItem(player.selectedSlotIndex);
                     target.triggerEvent(`${music}_loading`);
                     system.runTimeout(() => {
                         if (music == 'pigstep') {
@@ -355,9 +355,13 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                                 };
                                 entityData.option = false;
                                 entityData.ride2 = false;
-                                target.triggerEvent(`back_mirror_close2`);
+                                console.warn(target.typeId);
+                                
+                                system.run(()=>{
+                                    target.triggerEvent(`back_mirror_close2`);
+                                })
                                 target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0);
-                                player.runCommandAsync(`give @s music_disc_${data.disc}`);
+                                if(data.disc != undefined) player.runCommandAsync(`give @s music_disc_${data.disc}`);
                                 rid.getRiders().forEach(entity => {
                                     target.triggerEvent(`light_on`);
                                     entity.runCommandAsync(`stopsound @s record.${data.disc}`);
@@ -387,9 +391,9 @@ world.beforeEvents.playerInteractWithEntity.subscribe(e => {
                             };
                             entityData.option = false;
                             entityData.ride2 = false;
-                            target.triggerEvent(`back_mirror_close`);
+                            target.triggerEvent(`back_mirror_close2`);
                             target.getComponent(EntityMovementComponent.componentId)?.setCurrentValue(0);
-                            player.runCommandAsync(`give @s music_disc_${data.disc}`);
+                            if(data.disc != undefined) player.runCommandAsync(`give @s music_disc_${data.disc}`);
                             rid.getRiders().forEach(entity => {
                                 target.triggerEvent(`light_on`);
                                 entity.runCommandAsync(`stopsound @s record.${data.disc}`);
